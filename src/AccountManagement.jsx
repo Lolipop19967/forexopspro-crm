@@ -101,7 +101,7 @@ function Toast({ message, type = "success", onClose }) {
 function CreateAccountModal({ mode, onClose, onSuccess }) {
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", password: "",
-    initialBalance: mode === "prop" ? "50000" : "10000",
+    initialBalance: mode === "prop" ? "50000" : "50000",
     currencyID: "1",
   });
   const [loading, setLoading] = useState(false);
@@ -127,6 +127,7 @@ function CreateAccountModal({ mode, onClose, onSuccess }) {
         firstName: form.firstName,
         lastName: form.lastName,
         email: form.email,
+        mode,
       });
       if (result.ok) {
         onSuccess(result.account);
