@@ -399,11 +399,12 @@ const Funnel = ({ data }) => {
    PROP COMPONENTS
    ───────────────────────────────────────────────────────────── */
 function PayoutQueueRow({ item }) {
-  const [status, setStatus] = useState(item.status);
   const trader = TRADERS.find(t=>t.name===item.trader);
-  const col = payoutStatusColor(status);
+  const col = payoutStatusColor(item.status);
+  const autoAction = item.status==="Approved" ? "Auto-Processed" : item.status==="Flagged" ? "Auto-Blocked" : "Processing...";
+  const autoColor = item.status==="Approved" ? C.green : item.status==="Flagged" ? C.red : C.amber;
   return (
-    <TRow highlight={status==="Flagged"}>
+    <TRow highlight={item.status==="Flagged"}>
       <Td>
         <div style={{ display:"flex", alignItems:"center", gap:9 }}>
           {trader && <Av i={trader.avatar} size={28} color={col} />}
@@ -415,25 +416,22 @@ function PayoutQueueRow({ item }) {
       </Td>
       <Td><span style={{ fontFamily:"monospace", fontSize:11, color:C.faint }}>{item.accountId}</span></Td>
       <Td><span style={{ fontFamily:"monospace", fontWeight:700, color:item.profit>0?C.green:C.faint }}>{item.profit>0?$(item.profit):"—"}</span></Td>
-      <Td><Tag color={col}>{status}</Tag></Td>
-      <Td c={{ fontSize:12, color:status==="Flagged"?C.red:C.faint, maxWidth:260 }}>{item.reason||"—"}</Td>
+      <Td><Tag color={col}>{item.status}</Tag></Td>
+      <Td c={{ fontSize:12, color:item.status==="Flagged"?C.red:C.faint, maxWidth:260 }}>{item.reason||"All checks passed"}</Td>
       <Td>
-        {status==="Pending" && (
-          <div style={{ display:"flex", gap:6 }}>
-            <button onClick={()=>setStatus("Approved")} style={{ padding:"4px 11px", background:C.green, color:"#000", border:"none", borderRadius:5, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Approve</button>
-            <button onClick={()=>setStatus("Flagged")} style={{ padding:"4px 11px", background:"none", color:C.red, border:`1px solid ${C.red}40`, borderRadius:5, fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>Flag</button>
-          </div>
-        )}
-        {status==="Approved" && <span style={{ fontSize:11, color:C.green, fontWeight:600 }}>Processed</span>}
-        {status==="Flagged" && <span style={{ fontSize:11, color:C.red, fontWeight:600 }}>Under Review</span>}
+        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+          <span style={{ width:6, height:6, borderRadius:"50%", background:autoColor, boxShadow:`0 0 5px ${autoColor}`, display:"inline-block" }} />
+          <span style={{ fontSize:11, fontWeight:700, color:autoColor }}>{autoAction}</span>
+        </div>
       </Td>
     </TRow>
   );
 }
 
 function PayoutRow({ p }) {
-  const [approved, setApproved] = useState(false);
   const trader = TRADERS.find(t=>t.name===p.trader);
+  const autoStatus = p.eligible ? "Auto-Approved" : "Auto-Blocked";
+  const autoColor = p.eligible ? C.green : C.red;
   return (
     <TRow>
       <Td>
@@ -445,14 +443,13 @@ function PayoutRow({ p }) {
       <Td><span style={{ fontFamily:"monospace", color:C.muted }}>${p.balance.toLocaleString()}</span></Td>
       <Td><span style={{ fontFamily:"monospace", fontWeight:700, color:p.profit>=0?C.green:C.red }}>{p.profit>=0?"+":""}{$(p.profit)}</span></Td>
       <Td><span style={{ fontFamily:"monospace", fontWeight:700, color:p.eligible?C.green:C.faint }}>{p.eligible?"$"+(p.profit*0.8).toLocaleString():"—"}</span></Td>
-      <Td><Tag color={p.eligible?C.green:C.red}>{p.eligible?"Yes":"No"}</Tag></Td>
+      <Td><Tag color={p.eligible?C.green:C.red}>{p.eligible?"Eligible":"Blocked"}</Tag></Td>
       <Td c={{ fontSize:12, color:p.eligible?C.faint:C.red, maxWidth:240 }}>{p.reason}</Td>
       <Td>
-        {p.eligible?(
-          <button onClick={()=>setApproved(true)} style={{ padding:"5px 13px", background:approved?C.surface:C.green, color:approved?C.green:"#000", border:`1px solid ${C.green}`, borderRadius:6, fontSize:11, fontWeight:700, cursor:approved?"default":"pointer", fontFamily:"inherit", transition:"all 0.15s" }}>
-            {approved?"Approved":"Approve"}
-          </button>
-        ):(<span style={{ fontSize:11, color:C.faint }}>—</span>)}
+        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+          <span style={{ width:6, height:6, borderRadius:"50%", background:autoColor, boxShadow:`0 0 5px ${autoColor}`, display:"inline-block" }} />
+          <span style={{ fontSize:11, fontWeight:700, color:autoColor }}>{autoStatus}</span>
+        </div>
       </Td>
     </TRow>
   );
@@ -757,22 +754,22 @@ function PropPayouts() {
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
-        <Stat label="Pending Approval" value={PAYOUT_QUEUE.filter(p=>p.status==="Pending").length} sub="Awaiting review" accent={C.amber} />
-        <Stat label="Approved" value={PAYOUT_QUEUE.filter(p=>p.status==="Approved").length} sub="Ready to process" accent={C.green} />
-        <Stat label="Flagged" value={PAYOUT_QUEUE.filter(p=>p.status==="Flagged").length} sub="Manual review needed" accent={C.red} />
-        <Stat label="Total Value" value={$k(PAYOUT_QUEUE.filter(p=>p.status!=="Flagged").reduce((s,p)=>s+p.profit,0))} sub="Approved + Pending" accent={C.green} />
+        <Stat label="Auto-Processing" value={PAYOUT_QUEUE.filter(p=>p.status==="Pending").length} sub="System validating now" accent={C.amber} />
+        <Stat label="Auto-Approved" value={PAYOUT_QUEUE.filter(p=>p.status==="Approved").length} sub="Funds released" accent={C.green} />
+        <Stat label="Auto-Blocked" value={PAYOUT_QUEUE.filter(p=>p.status==="Flagged").length} sub="Rule or risk violation" accent={C.red} />
+        <Stat label="Total Processed" value={$k(PAYOUT_QUEUE.filter(p=>p.status!=="Flagged").reduce((s,p)=>s+p.profit,0))} sub="Auto-approved value" accent={C.green} />
       </div>
       <Card s={{ border:`1px solid ${C.amber}18` }}>
-        <CardHead title="Payout Queue" sub="Approve or flag each payout — actions take effect immediately" accent={C.amber} right={<div style={{ display:"flex", gap:8 }}><Tag color={C.amber}>{PAYOUT_QUEUE.filter(p=>p.status==="Pending").length} pending</Tag><Tag color={C.red}>{PAYOUT_QUEUE.filter(p=>p.status==="Flagged").length} flagged</Tag></div>} />
+        <CardHead title="Automated Payout Queue" sub="System validates every payout against rules, risk score, and AML — no manual approval needed" accent={C.amber} right={<div style={{ display:"flex", gap:8 }}><Tag color={C.amber}>{PAYOUT_QUEUE.filter(p=>p.status==="Pending").length} processing</Tag><Tag color={C.red}>{PAYOUT_QUEUE.filter(p=>p.status==="Flagged").length} blocked</Tag></div>} />
         <table>
-          <thead><tr>{["Trader","Account ID","Profit","Status","Reason","Action"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+          <thead><tr>{["Trader","Account ID","Profit","Status","System Reason","Outcome"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
           <tbody>{PAYOUT_QUEUE.map(item=><PayoutQueueRow key={item.id} item={item} />)}</tbody>
         </table>
       </Card>
       <Card>
-        <CardHead title="Payout Eligibility" sub="Determines which traders can request profit payouts this cycle" />
+        <CardHead title="Payout Eligibility Engine" sub="Automatically determines which traders meet profit targets, risk thresholds, and rule compliance" />
         <table>
-          <thead><tr>{["Trader","Balance","Profit","80% Split","Eligible","Reason","Action"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+          <thead><tr>{["Trader","Balance","Profit","80% Split","Eligible","System Reason","Outcome"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
           <tbody>{PAYOUTS_DATA.map((p,i)=><PayoutRow key={i} p={p} />)}</tbody>
         </table>
       </Card>
@@ -840,7 +837,7 @@ function PropRisk({ traders, demoMode }) {
         <CardHead title="Risk Decision Board — All Traders" sub="Click any row to see full flag detail" accent={C.red} />
         <div style={{ overflowX:"auto" }}>
           <table>
-            <thead><tr>{["Trader","IP Address","Risk Level","Flags","Payout Impact","Recommended Action","Actions"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+            <thead><tr>{["Trader","IP Address","Risk Level","Flags","Payout Impact","System Analysis","Auto Outcome"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
             <tbody>
               {sorted.map(t=>{
                 const detail = RISK_DETAILS[t.id];
@@ -904,8 +901,10 @@ function PropRisk({ traders, demoMode }) {
 }
 
 function RiskRow({ t, sip, flags, detail, imp, impColor, recC, demoMode, ACTIONS_LIST, onExpand }) {
-  const [action, setAction] = useState(null);
-  const glow = demoMode && t.isDemo;
+  const autoOutcome = detail?.recommendation;
+  const autoLabel = detail?.recommendationLabel || "—";
+  const outcomeColor = { safe:C.green, review:C.amber, reject:C.red, freeze:C.blue }[autoOutcome] || C.faint;
+  const outcomePrefix = { safe:"✓ Auto-Clear", review:"⚠ Escalated", reject:"⊘ Auto-Blocked", freeze:"❄ Auto-Frozen" }[autoOutcome] || "—";
   return (
     <tr style={{ background:t.isDemo?`linear-gradient(90deg,${C.amber}0A,${C.red}06,transparent)`:"transparent", borderBottom:`1px solid ${C.border}`, cursor:"pointer" }}
       onClick={()=>onExpand(t.id)}
@@ -944,22 +943,13 @@ function RiskRow({ t, sip, flags, detail, imp, impColor, recC, demoMode, ACTIONS
         </div>
       </td>
       <td style={{ padding:"14px 16px", verticalAlign:"middle" }}>
-        <span style={{ fontSize:12, fontWeight:700, color:recC }}>{detail?.recommendationLabel||"—"}</span>
+        <span style={{ fontSize:12, fontWeight:700, color:recC }}>{autoLabel}</span>
       </td>
-      <td style={{ padding:"14px 16px", verticalAlign:"middle" }} onClick={e=>e.stopPropagation()}>
-        {action?(
-          <span style={{ fontSize:12, fontWeight:700, color:{ approve:C.green, reject:C.red, review:C.amber, freeze:C.blue }[action] }}>
-            {{ approve:"Approved", reject:"Rejected", review:"In Review", freeze:"Frozen" }[action]}
-          </span>
-        ):(
-          <div style={{ display:"flex", gap:5 }}>
-            {ACTIONS_LIST.map(a=>(
-              <button key={a.id} onClick={()=>setAction(a.id)} style={{ height:28, padding:"0 8px", borderRadius:7, background:a.bg==="none"?"transparent":a.bg, color:a.fg, border:`1.5px solid ${a.border||a.bg}`, cursor:"pointer", fontSize:11, fontWeight:700, fontFamily:"inherit" }}>
-                {a.icon}
-              </button>
-            ))}
-          </div>
-        )}
+      <td style={{ padding:"14px 16px", verticalAlign:"middle" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+          <span style={{ width:6, height:6, borderRadius:"50%", background:outcomeColor, boxShadow:`0 0 5px ${outcomeColor}`, display:"inline-block", flexShrink:0 }} />
+          <span style={{ fontSize:11, fontWeight:700, color:outcomeColor }}>{outcomePrefix}</span>
+        </div>
       </td>
     </tr>
   );
