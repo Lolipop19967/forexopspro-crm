@@ -1871,6 +1871,7 @@ export default function App() {
         <div style={{ padding:"18px 16px", borderBottom:`1px solid ${C.border}`, flexShrink:0 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
             <img src="/logo.png" alt="ForexOpsPro" style={{ height:32, objectFit:"contain" }} />
+          </div>
           <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:8, padding:3, display:"flex", gap:2 }}>
             {["prop","broker"].map(m=>(
               <button key={m} onClick={()=>handleModeSwitch(m)} style={{ flex:1, padding:"5px 0", borderRadius:6, background:mode===m?m==="prop"?`${C.green}15`:`${C.blue}15`:"transparent", border:`1px solid ${mode===m?m==="prop"?C.green+"40":C.blue+"40":"transparent"}`, color:mode===m?m==="prop"?C.green:C.blue:C.faint, fontSize:10, fontWeight:mode===m?700:500, cursor:"pointer", fontFamily:"inherit", transition:"all 0.15s", letterSpacing:"0.04em", textTransform:"uppercase" }}>
