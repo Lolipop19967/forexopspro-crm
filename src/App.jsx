@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PropAccountManagement, BrokerAccountManagement } from "./AccountManagement";
 
 /* ─────────────────────────────────────────────────────────────
    DESIGN TOKENS
@@ -1704,6 +1705,7 @@ function BrokerSupport({ setPanel }) {
    ───────────────────────────────────────────────────────────── */
 const PROP_NAVS = [
   { id:"overview", label:"Overview", icon:"□", group:null },
+  { id:"accounts", label:"Account Management", icon:"⊞", group:null },
   { id:"lifecycle", label:"Trader Lifecycle", icon:"◎", group:"─ Operations ─" },
   { id:"payouts", label:"Payouts / Withdrawals", icon:"$", group:null },
   { id:"violations", label:"Rule Violations", icon:"⚑", group:null },
@@ -1716,6 +1718,7 @@ const PROP_NAVS = [
 
 const BROKER_NAVS = [
   { id:"b_overview", label:"Overview", icon:"□", group:null },
+  { id:"b_accounts", label:"Account Management", icon:"⊞", group:null },
   { id:"b_clients", label:"Client Management", icon:"◎", group:"─ Operations ─" },
   { id:"b_payments", label:"Payments Monitor", icon:"⇄", group:null },
   { id:"b_kyc", label:"KYC / Compliance", icon:"✦", group:null },
@@ -1728,14 +1731,16 @@ const BROKER_NAVS = [
 ];
 
 const PROP_TITLES = {
-  overview:"Operations Overview", lifecycle:"Trader Lifecycle",
+  overview:"Operations Overview", accounts:"Account Management",
+  lifecycle:"Trader Lifecycle",
   payouts:"Payouts / Withdrawals", violations:"Rule Violations Panel",
   automation:"Automation Engine", risk:"Risk Detection",
   riskpay:"Risk & Payouts", revenue:"Revenue Analytics", support:"Support Center",
 };
 
 const BROKER_TITLES = {
-  b_overview:"Operations Overview", b_clients:"Client Management",
+  b_overview:"Operations Overview", b_accounts:"Account Management",
+  b_clients:"Client Management",
   b_payments:"Payments Monitor", b_kyc:"KYC / Compliance",
   b_exposure:"Exposure Overview", b_violations:"Compliance Violations",
   b_risk:"AML & Risk Detection", b_ibs:"IB Portal",
@@ -1942,6 +1947,7 @@ export default function App() {
 
         {/* PROP FIRM PAGES */}
         {mode==="prop" && tab==="overview" && <PropOverview traders={filteredTraders} payoutQueue={PAYOUT_QUEUE} ruleViolations={RULE_VIOLATIONS} />}
+        {mode==="prop" && tab==="accounts" && <PropAccountManagement />}
         {mode==="prop" && tab==="lifecycle" && <PropLifecycle traders={filteredTraders} />}
         {mode==="prop" && tab==="payouts" && <PropPayouts />}
         {mode==="prop" && tab==="violations" && <PropViolations />}
@@ -1953,6 +1959,7 @@ export default function App() {
 
         {/* BROKER PAGES */}
         {mode==="broker" && tab==="b_overview" && <BrokerOverview />}
+        {mode==="broker" && tab==="b_accounts" && <BrokerAccountManagement clients={BROKER_CLIENTS} kycData={BROKER_KYC} />}
         {mode==="broker" && tab==="b_clients" && <BrokerClients />}
         {mode==="broker" && tab==="b_payments" && <BrokerPayments />}
         {mode==="broker" && tab==="b_kyc" && <BrokerKYC />}
