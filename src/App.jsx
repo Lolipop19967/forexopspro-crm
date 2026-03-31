@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { PropAccountManagement, BrokerAccountManagement } from "./AccountManagement";
+import { useLiveOverview, useDrawdownMonitor } from "./useLiveData";
 
 /* ─────────────────────────────────────────────────────────────
    DESIGN TOKENS
@@ -561,16 +562,40 @@ function ReplyModal({ ticket, personName, onClose }) {
    PROP FIRM PAGES
    ───────────────────────────────────────────────────────────── */
 function PropOverview({ traders, payoutQueue, ruleViolations }) {
-  const totalRev = traders.filter(t=>t.accountSize>0).reduce((s,t)=>s+t.accountSize*0.08,0);
+  const { stats, accounts: liveAccounts, loading } = useLiveOverview("prop");
+  const { breached } = useDrawdownMonitor(10);
+  const hasLive = liveAccounts.length > 0;
+  const totalRev = hasLive
+    ? liveAccounts.reduce((s,a)=>s+(a.liveBalance||a.balance||0),0)*0.08
+    : traders.filter(t=>t.accountSize>0).reduce((s,t)=>s+t.accountSize*0.08,0);
   const pendingPayouts = payoutQueue.filter(p=>p.status==="Pending").length;
   const flaggedPayouts = payoutQueue.filter(p=>p.status==="Flagged").length;
   const underReview = traders.filter(t=>t.payoutEligibility==="Under Review").length;
   const revMonths = REV_MONTHS;
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+      {/* Live Condor stats banner */}
+      {hasLive && (
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
+          <Stat label="Live Accounts" value={stats.totalAccounts} sub="On Condor — ForexOpsPro" accent={C.green} />
+          <Stat label="Total Funds" value={$k(stats.totalFunds)} sub="Live from Condor" accent={C.green} />
+          <Stat label="Total Equity" value={$k(stats.totalEquity)} sub="Real-time" accent={C.blue} />
+          <Stat label="Drawdown Alerts" value={breached.length} sub={breached.length>0?"Accounts breached limit":"All accounts healthy"} accent={breached.length>0?C.red:C.green} />
+        </div>
+      )}
+      {breached.length > 0 && (
+        <div style={{ background:C.card, border:`1px solid ${C.red}30`, borderRadius:C.rL, padding:"16px 20px" }}>
+          <div style={{ fontSize:13, fontWeight:700, color:C.red, marginBottom:10 }}>⚠ Drawdown Breach Detected — Accounts Auto-Disabled</div>
+          {breached.map(b=>(
+            <div key={b.externalAccountID} style={{ fontSize:12, color:C.muted, marginBottom:4 }}>
+              Account {b.externalAccountID} — Balance ${b.balance?.toLocaleString()} / Equity ${b.equity?.toLocaleString()} — {b.drawdownPct}% drawdown
+            </div>
+          ))}
+        </div>
+      )}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
         <Stat label="Total Revenue" value={$k(totalRev)} trend={12.4} sub="all-time" accent={C.green} />
-        <Stat label="Active Traders" value={traders.filter(t=>t.stage==="active").length} trend={8} sub={`of ${traders.length} enrolled`} accent={C.green} />
+        <Stat label="Active Traders" value={hasLive?stats.activeAccounts:traders.filter(t=>t.stage==="active").length} trend={8} sub={hasLive?`of ${stats.totalAccounts} on Condor`:`of ${traders.length} enrolled`} accent={C.green} />
         <Stat label="Pending Payouts" value={pendingPayouts} sub="awaiting approval" accent={C.amber} />
         <Stat label="Rule Violations" value={ruleViolations.length} sub="this cycle" accent={C.red} />
       </div>
@@ -1080,12 +1105,14 @@ function PropSupport({ setPanel }) {
    BROKER PAGES — completely prop-free
    ───────────────────────────────────────────────────────────── */
 function BrokerOverview() {
-  const totalFunds = BROKER_CLIENTS.reduce((s,c)=>s+c.balance,0);
+  const { stats, accounts: liveAccounts, loading } = useLiveOverview("broker");
+  const hasLive = liveAccounts.length > 0;
+  const totalFunds = hasLive ? stats.totalFunds : BROKER_CLIENTS.reduce((s,c)=>s+c.balance,0);
+  const activeClients = hasLive ? stats.activeAccounts : BROKER_CLIENTS.filter(c=>c.stage==="active").length;
+  const totalClients = hasLive ? stats.totalAccounts : BROKER_CLIENTS.length;
   const verifiedClients = Object.values(BROKER_KYC).filter(k=>k.status==="Verified").length;
   const kycRate = Math.round((verifiedClients/BROKER_CLIENTS.length)*100);
   const flaggedPay = BROKER_PAYMENTS.filter(p=>p.status==="Flagged").length;
-  const activeClients = BROKER_CLIENTS.filter(c=>c.stage==="active").length;
-  const flaggedClients = BROKER_CLIENTS.filter(c=>c.flagged).length;
   const brokerRevMonths = [
     { m:"Jan", v:24000 },{ m:"Feb", v:31000 },{ m:"Mar", v:28000 },
     { m:"Apr", v:44000 },{ m:"May", v:52000 },{ m:"Jun", v:61000 },
@@ -1093,8 +1120,8 @@ function BrokerOverview() {
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
-        <Stat label="Total Client Funds" value={$k(totalFunds)} trend={8.4} sub="All accounts" accent={C.green} />
-        <Stat label="Active Clients" value={activeClients} sub={`of ${BROKER_CLIENTS.length} enrolled`} accent={C.green} />
+        <Stat label="Total Client Funds" value={$k(totalFunds)} trend={8.4} sub={hasLive?"Live from Condor":"All accounts"} accent={C.green} />
+        <Stat label="Active Clients" value={activeClients} sub={`of ${totalClients} enrolled`} accent={C.green} />
         <Stat label="KYC Compliance" value={`${kycRate}%`} sub={`${verifiedClients} verified`} accent={kycRate>=80?C.green:C.amber} />
         <Stat label="AML Flags" value={flaggedPay} sub="Requires review" accent={C.red} />
       </div>
