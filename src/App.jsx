@@ -1897,7 +1897,7 @@ export default function App() {
       <aside style={{ position:"fixed", top:0, left:0, bottom:0, width:228, background:C.surface, borderRight:`1px solid ${C.border}`, display:"flex", flexDirection:"column", zIndex:100, overflowY:"auto" }}>
         <div style={{ padding:"18px 16px", borderBottom:`1px solid ${C.border}`, flexShrink:0 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
-            <img src="/logo.png" alt="ForexOpsPro" style={{ height:32, objectFit:"contain" }} />
+            <img src="/logo.png" alt="ForexOpsPro" style={{ height:22, maxWidth:140, objectFit:"contain" }} />
           </div>
           <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:8, padding:3, display:"flex", gap:2 }}>
             {["prop","broker"].map(m=>(
