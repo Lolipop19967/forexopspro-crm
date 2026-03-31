@@ -28,30 +28,11 @@ export function useAccounts(mode) {
     setLoading(true);
     setError(null);
     try {
-      const r = await apiFetch("/accounts");
+      const r = await apiFetch("/accounts/live");
       if (r.ok) {
         let accs = r.accounts || [];
         if (mode) accs = accs.filter(a => !a.mode || a.mode === mode);
-
-        // Enrich with live Condor data for each account
-        const enriched = await Promise.all(
-          accs.map(async (acc) => {
-            try {
-              const details = await apiFetch(`/condor/accounts/${acc.external_id}`);
-              if (details.ok && details.account) {
-                return {
-                  ...acc,
-                  liveBalance: details.account.Balance,
-                  liveEquity: details.account.Equity,
-                  liveMargin: details.account.Margin,
-                  livePnl: details.account.OpenPnL || 0,
-                };
-              }
-            } catch (e) {}
-            return acc;
-          })
-        );
-        setAccounts(enriched);
+        setAccounts(accs);
       }
     } catch (e) {
       setError(e.message);
@@ -127,9 +108,9 @@ export function useLiveOverview(mode) {
     totalAccounts: accounts.length,
     activeAccounts: accounts.filter(a => a.status === "active").length,
     disabledAccounts: accounts.filter(a => a.status === "disabled").length,
-    totalFunds: accounts.reduce((s, a) => s + (a.liveBalance || a.balance || 0), 0),
-    totalEquity: accounts.reduce((s, a) => s + (a.liveEquity || a.balance || 0), 0),
-    floatingPnl: accounts.reduce((s, a) => s + (a.livePnl || 0), 0),
+    totalFunds: accounts.reduce((s, a) => s + (a.live_balance || a.balance || 0), 0),
+    totalEquity: accounts.reduce((s, a) => s + (a.live_equity || a.balance || 0), 0),
+    floatingPnl: accounts.reduce((s, a) => s + (a.live_pnl || 0), 0),
     pendingPayouts: 0,
     riskFlags: accounts.filter(a => a.status === "disabled").length,
   };
