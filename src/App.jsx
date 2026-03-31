@@ -1870,12 +1870,7 @@ export default function App() {
       <aside style={{ position:"fixed", top:0, left:0, bottom:0, width:228, background:C.surface, borderRight:`1px solid ${C.border}`, display:"flex", flexDirection:"column", zIndex:100, overflowY:"auto" }}>
         <div style={{ padding:"18px 16px", borderBottom:`1px solid ${C.border}`, flexShrink:0 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
-            <div style={{ width:36, height:36, borderRadius:10, background:"#000", border:`1.5px solid ${accentColor}50`, boxShadow:`0 0 18px ${accentColor}35`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, color:accentColor, fontWeight:800, fontFamily:"monospace" }}>FO</div>
-            <div>
-              <div style={{ fontSize:15, fontWeight:800, color:C.text, letterSpacing:"-0.02em" }}>ForexOpsPro</div>
-              <div style={{ fontSize:10, color:C.faint, marginTop:1, letterSpacing:"0.03em" }}>Operations Platform</div>
-            </div>
-          </div>
+            <img src="/logo.png" alt="ForexOpsPro" style={{ height:32, objectFit:"contain" }} />
           <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:8, padding:3, display:"flex", gap:2 }}>
             {["prop","broker"].map(m=>(
               <button key={m} onClick={()=>handleModeSwitch(m)} style={{ flex:1, padding:"5px 0", borderRadius:6, background:mode===m?m==="prop"?`${C.green}15`:`${C.blue}15`:"transparent", border:`1px solid ${mode===m?m==="prop"?C.green+"40":C.blue+"40":"transparent"}`, color:mode===m?m==="prop"?C.green:C.blue:C.faint, fontSize:10, fontWeight:mode===m?700:500, cursor:"pointer", fontFamily:"inherit", transition:"all 0.15s", letterSpacing:"0.04em", textTransform:"uppercase" }}>
