@@ -564,9 +564,9 @@ function ReplyModal({ ticket, personName, onClose }) {
 function PropOverview({ traders, payoutQueue, ruleViolations }) {
   const { stats, accounts: liveAccounts, loading } = useLiveOverview("prop");
   const { breached } = useDrawdownMonitor(10);
-  const hasLive = liveAccounts.length > 0;
+  const hasLive = !loading && liveAccounts.length > 0;
   const totalRev = hasLive
-    ? liveAccounts.reduce((s,a)=>s+(a.liveBalance||a.balance||0),0)*0.08
+    ? liveAccounts.reduce((s,a)=>s+(a.live_balance||a.balance||0),0)*0.08
     : traders.filter(t=>t.accountSize>0).reduce((s,t)=>s+t.accountSize*0.08,0);
   const pendingPayouts = payoutQueue.filter(p=>p.status==="Pending").length;
   const flaggedPayouts = payoutQueue.filter(p=>p.status==="Flagged").length;
@@ -1106,7 +1106,7 @@ function PropSupport({ setPanel }) {
    ───────────────────────────────────────────────────────────── */
 function BrokerOverview() {
   const { stats, accounts: liveAccounts, loading } = useLiveOverview("broker");
-  const hasLive = liveAccounts.length > 0;
+  const hasLive = !loading && liveAccounts.length > 0;
   const totalFunds = hasLive ? stats.totalFunds : BROKER_CLIENTS.reduce((s,c)=>s+c.balance,0);
   const activeClients = hasLive ? stats.activeAccounts : BROKER_CLIENTS.filter(c=>c.stage==="active").length;
   const totalClients = hasLive ? stats.totalAccounts : BROKER_CLIENTS.length;
