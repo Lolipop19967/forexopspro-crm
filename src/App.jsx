@@ -248,12 +248,12 @@ const KYC_DATA = {
 
 const RISK_DETAILS = {
   DEMO: { flagSource:"Auto", reasons:["Shared IP 192.168.1.10 detected across 3 accounts within 6 hours","Rule violation — lot size of 5.0 exceeded maximum of 4.0 on XAUUSD","Profit generated 94% in a single 2-hour session — consistency rule breach","Account registered same day as two other flagged accounts on the same IP"], payoutImpact:{ type:"blocked", amount:5200, label:"Blocked ($5,200)" }, recommendation:"reject", recommendationLabel:"Reject Payout", notes:"Trader appears profitable (+$5,200) but multiple automated flags prevent payout." },
-  T001: { flagSource:"Auto", reasons:["Shared IP 192.168.1.10 detected across 3 accounts","Account registration patterns match known multi-account behaviour"], payoutImpact:{ type:"at-risk", amount:4320, label:"At Risk ($4,320)" }, recommendation:"review", recommendationLabel:"Review Required", notes:"IP cluster with T004 and T006. Review before payout." },
+  T001: { flagSource:"Auto", reasons:["CID match detected across 3 accounts — same device fingerprint","Account registration patterns match known multi-account behaviour"], payoutImpact:{ type:"at-risk", amount:4320, label:"At Risk ($4,320)" }, recommendation:"review", recommendationLabel:"Review Required", notes:"CID match with T004 and T006. Shared device fingerprint — review before payout. Note: investor password sharing is legitimate and excluded from this flag." },
   T002: { flagSource:"System", reasons:[], payoutImpact:{ type:"eligible", amount:7100, label:"Eligible ($7,100)" }, recommendation:"safe", recommendationLabel:"Safe — Approve", notes:"No flags. Risk score 8. Phase 2 targets met. KYC verified." },
   T003: { flagSource:"Auto", reasons:["Max daily loss breached on 8 Nov 2024","Challenge failed — account locked","3 trades without stop loss prior to failure"], payoutImpact:{ type:"blocked", amount:0, label:"Blocked — Challenge Failed" }, recommendation:"reject", recommendationLabel:"Reject Payout", notes:"Challenge invalidated." },
   T004: { flagSource:"Auto", reasons:["Shared IP with Dmitri Volkov (Critical risk)","No payment received — possible test account"], payoutImpact:{ type:"blocked", amount:0, label:"Blocked — No Payment" }, recommendation:"freeze", recommendationLabel:"Freeze Account", notes:"No active trading. Flagged for shared IP with T006." },
   T005: { flagSource:"System", reasons:[], payoutImpact:{ type:"eligible", amount:12400, label:"Eligible ($12,400)" }, recommendation:"safe", recommendationLabel:"Safe — Approve", notes:"Clean record. Risk score 5. $200k account. Phase 2 targets exceeded." },
-  T006: { flagSource:"Auto", reasons:["IP linked to 3 accounts","Temp email domain","Consistency rule failed — 78% profit in single session","Same device fingerprint across T001, T004, T006"], payoutImpact:{ type:"blocked", amount:0, label:"Blocked — Account Frozen" }, recommendation:"freeze", recommendationLabel:"Freeze Account", notes:"Critical risk. Compliance review in progress." },
+  T006: { flagSource:"Auto", reasons:["CID match across 3 accounts — same device fingerprint as T001 and T004","Temp email domain","Consistency rule failed — 78% profit in single session","Same CID fingerprint across T001, T004, T006"], payoutImpact:{ type:"blocked", amount:0, label:"Blocked — Account Frozen" }, recommendation:"freeze", recommendationLabel:"Freeze Account", notes:"Critical risk. CID-based device fingerprint confirms multi-account usage. Compliance review in progress." },
   T007: { flagSource:"System", reasons:[], payoutImpact:{ type:"blocked", amount:0, label:"Blocked — Target Not Met" }, recommendation:"safe", recommendationLabel:"No Action Needed", notes:"Low risk. Phase 1 active. Profit target not yet reached." },
   T008: { flagSource:"System", reasons:[], payoutImpact:{ type:"eligible", amount:9800, label:"Eligible ($9,800)" }, recommendation:"safe", recommendationLabel:"Safe — Approve", notes:"Clean record. Risk score 3. Phase 2 complete." },
   T009: { flagSource:"System", reasons:[], payoutImpact:{ type:"blocked", amount:0, label:"Blocked — No Account" }, recommendation:"safe", recommendationLabel:"No Action Needed", notes:"Lead stage. No trading activity." },
@@ -816,7 +816,7 @@ function PropAutomation() {
   );
 }
 
-function PropRisk({ traders, demoMode }) {
+function PropRisk({ traders }) {
   const [expandedId, setExpandedId] = useState(null);
   const sorted = [...traders].sort((a,b)=>(b.isDemo?1:-1)||(b.riskScore-a.riskScore));
   const ACTIONS_LIST = [
@@ -827,23 +827,31 @@ function PropRisk({ traders, demoMode }) {
   ];
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+      {/* CID info banner */}
+      <div style={{ background:C.card, border:`1px solid ${C.blue}25`, borderRadius:C.rL, padding:"14px 20px", display:"flex", alignItems:"flex-start", gap:12 }}>
+        <span style={{ fontSize:16, flexShrink:0 }}>ℹ</span>
+        <div style={{ fontSize:12, color:C.muted, lineHeight:1.7 }}>
+          <strong style={{ color:C.text }}>Device Fingerprint (CID) Detection — MetaTrader</strong><br/>
+          CID is a unique hardware identifier generated by MetaTrader from CPU, MAC address, screen resolution and other device metrics. It is more reliable than IP detection since mobile LTE connections allocate dynamic IPs every 1–2 hours. CID matching from desktop and mobile apps is highly reliable. Web terminal CIDs are weaker due to browser hardware access limits. Known false positives: third-party chart services (e.g. ForexFactory), shared VPS hosting, and investor password sharing are all legitimate and should not be flagged.
+        </div>
+      </div>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
         <Stat label="Critical Risk" value={traders.filter(t=>t.riskLevel==="Critical").length} sub="Immediate action" accent={C.red} />
         <Stat label="High Risk" value={traders.filter(t=>t.riskLevel==="High").length} sub="Monitoring" accent={C.red} />
-        <Stat label="Shared IPs" value="3" sub="Same IP cluster" accent={C.amber} />
+        <Stat label="CID Matches" value="3" sub="Device fingerprint cluster" accent={C.amber} />
         <Stat label="Under Review" value={traders.filter(t=>t.payoutEligibility==="Under Review").length} sub="Compliance hold" accent={C.blue} />
       </div>
       <Card>
-        <CardHead title="Risk Decision Board — All Traders" sub="Click any row to see full flag detail" accent={C.red} />
+        <CardHead title="Risk Decision Board — All Traders" sub="CID-based device fingerprinting + behavioural analysis. Click any row for full detail." accent={C.red} />
         <div style={{ overflowX:"auto" }}>
           <table>
-            <thead><tr>{["Trader","IP Address","Risk Level","Flags","Payout Impact","System Analysis","Auto Outcome"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+            <thead><tr>{["Trader","CID / IP","Risk Level","Flags","Payout Impact","System Analysis","Auto Outcome"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
             <tbody>
               {sorted.map(t=>{
                 const detail = RISK_DETAILS[t.id];
                 const sip = traders.filter(x=>x.ip===t.ip&&x.id!==t.id);
                 const flags = [];
-                if(sip.length>0) flags.push({ label:"Shared IP", color:C.red });
+                if(sip.length>0) flags.push({ label:"CID Match", color:C.red });
                 if(t.email.includes("temp")) flags.push({ label:"Temp Email", color:C.amber });
                 if(t.riskLevel==="Critical") flags.push({ label:"Critical", color:C.red });
                 if(t.hasViolation) flags.push({ label:"Violation", color:C.red });
@@ -851,7 +859,7 @@ function PropRisk({ traders, demoMode }) {
                 const impColor = ({ eligible:C.green, "at-risk":C.amber, blocked:C.red }[imp?.type])||C.faint;
                 const recC = ({ safe:C.green, review:C.amber, reject:C.red, freeze:C.red }[detail?.recommendation])||C.faint;
                 return (
-                  <RiskRow key={t.id} t={t} sip={sip} flags={flags} detail={detail} imp={imp} impColor={impColor} recC={recC} demoMode={demoMode} ACTIONS_LIST={ACTIONS_LIST} onExpand={setExpandedId} />
+                  <RiskRow key={t.id} t={t} sip={sip} flags={flags} detail={detail} imp={imp} impColor={impColor} recC={recC} ACTIONS_LIST={ACTIONS_LIST} onExpand={setExpandedId} />
                 );
               })}
             </tbody>
@@ -900,7 +908,7 @@ function PropRisk({ traders, demoMode }) {
   );
 }
 
-function RiskRow({ t, sip, flags, detail, imp, impColor, recC, demoMode, ACTIONS_LIST, onExpand }) {
+function RiskRow({ t, sip, flags, detail, imp, impColor, recC, ACTIONS_LIST, onExpand }) {
   const autoOutcome = detail?.recommendation;
   const autoLabel = detail?.recommendationLabel || "—";
   const outcomeColor = { safe:C.green, review:C.amber, reject:C.red, freeze:C.blue }[autoOutcome] || C.faint;
@@ -924,7 +932,8 @@ function RiskRow({ t, sip, flags, detail, imp, impColor, recC, demoMode, ACTIONS
       </td>
       <td style={{ padding:"14px 16px", verticalAlign:"middle" }}>
         <span style={{ fontFamily:"monospace", fontSize:11, color:sip.length>0?C.red:C.faint }}>{t.ip}</span>
-        {sip.length>0 && <div style={{ fontSize:9, color:C.red, fontWeight:700 }}>{sip.length} account{sip.length>1?"s":""} linked</div>}
+        {sip.length>0 && <div style={{ fontSize:9, color:C.red, fontWeight:700 }}>CID match — {sip.length} account{sip.length>1?"s":""}</div>}
+        {sip.length===0 && <div style={{ fontSize:9, color:C.faint }}>No CID match</div>}
       </td>
       <td style={{ padding:"14px 16px", verticalAlign:"middle" }}>
         <Tag color={riskColor(t.riskLevel)}>{t.riskLevel}</Tag>
@@ -1855,7 +1864,6 @@ export default function App() {
   const [mode, setMode] = useState("prop");
   const [propTab, setPropTab] = useState("overview");
   const [brokerTab, setBrokerTab] = useState("b_overview");
-  const [demoMode, setDemoMode] = useState(false);
   const [search, setSearch] = useState("");
   const [panel, setPanel] = useState(null);
   const [replyTo, setReplyTo] = useState(null);
@@ -1876,6 +1884,12 @@ export default function App() {
     setMode(m);
     setPanel(null);
     setReplyTo(null);
+    setSearch("");
+  };
+
+  const handleTabSwitch = (id) => {
+    setTab(id);
+    setSearch("");
   };
 
   const getPersonName = (ticket) => {
@@ -1923,7 +1937,7 @@ export default function App() {
             return (
               <div key={n.id}>
                 {n.group && <div style={{ fontSize:9, color:C.faint, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", padding:"10px 12px 4px", opacity:0.5 }}>{n.group}</div>}
-                <button onClick={()=>setTab(n.id)} style={{ display:"flex", alignItems:"center", gap:9, padding:"8px 12px", borderRadius:8, background:active?`${accentColor}10`:"transparent", border:`1px solid ${active?accentColor+"30":"transparent"}`, color:active?accentColor:C.muted, fontSize:13, fontWeight:active?600:400, fontFamily:"inherit", transition:"all 0.12s", textAlign:"left", width:"100%" }}>
+                <button onClick={()=>handleTabSwitch(n.id)} style={{ display:"flex", alignItems:"center", gap:9, padding:"8px 12px", borderRadius:8, background:active?`${accentColor}10`:"transparent", border:`1px solid ${active?accentColor+"30":"transparent"}`, color:active?accentColor:C.muted, fontSize:13, fontWeight:active?600:400, fontFamily:"inherit", transition:"all 0.12s", textAlign:"left", width:"100%", cursor:"pointer" }}>
                   <span style={{ fontSize:11, opacity:active?1:0.5, fontFamily:"monospace", flexShrink:0 }}>{n.icon}</span>
                   <span style={{ flex:1 }}>{n.label}</span>
                   {badge&&badge>0 && (
@@ -1962,17 +1976,6 @@ export default function App() {
               <input placeholder={mode==="prop"?"Search traders…":"Search clients…"} value={search} onChange={e=>setSearch(e.target.value)}
                 style={{ background:C.card, border:`1px solid ${C.border}`, color:C.text, padding:"8px 14px 8px 32px", borderRadius:C.r, fontSize:13, fontFamily:"inherit", width:200 }}
                 onFocus={e=>e.target.style.borderColor=accentColor} onBlur={e=>e.target.style.borderColor=C.border} />
-            </div>
-            <div style={{ display:"flex", alignItems:"center", gap:7, background:C.card, border:`1px solid ${C.border}`, borderRadius:C.r, padding:"7px 13px" }}>
-              <Pip color={C.green} pulse={true} />
-              <span style={{ fontSize:12, color:C.muted, fontWeight:500 }}>Live</span>
-            </div>
-            {mode==="prop" && (
-              <button onClick={()=>setDemoMode(d=>!d)} style={{ display:"flex", alignItems:"center", gap:7, padding:"7px 14px", borderRadius:C.r, background:demoMode?`${C.amber}15`:C.card, border:`1px solid ${demoMode?C.amber+"50":C.border}`, color:demoMode?C.amber:C.faint, fontSize:12, fontWeight:demoMode?700:500, cursor:"pointer", fontFamily:"inherit", transition:"all 0.2s" }}>
-                <span style={{ width:7, height:7, borderRadius:"50%", background:demoMode?C.amber:C.faint, boxShadow:demoMode?`0 0 8px ${C.amber}`:"none", display:"inline-block", flexShrink:0, transition:"all 0.2s" }} />
-                Demo Mode {demoMode?"ON":"OFF"}
-              </button>
-            )}
           </div>
         </div>
 
@@ -1983,7 +1986,7 @@ export default function App() {
         {mode==="prop" && tab==="payouts" && <PropPayouts />}
         {mode==="prop" && tab==="violations" && <PropViolations />}
         {mode==="prop" && tab==="automation" && <PropAutomation />}
-        {mode==="prop" && tab==="risk" && <PropRisk traders={filteredTraders} demoMode={demoMode} />}
+        {mode==="prop" && tab==="risk" && <PropRisk traders={filteredTraders} />}
         {mode==="prop" && tab==="riskpay" && <PropRiskPayouts />}
         {mode==="prop" && tab==="revenue" && <PropRevenue />}
         {mode==="prop" && tab==="support" && <PropSupport setPanel={setPanel} />}
