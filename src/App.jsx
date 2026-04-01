@@ -1136,6 +1136,29 @@ function BrokerOverview() {
     { m:"Jan", v:24000 },{ m:"Feb", v:31000 },{ m:"Mar", v:28000 },
     { m:"Apr", v:44000 },{ m:"May", v:52000 },{ m:"Jun", v:61000 },
   ];
+
+  // PPL data — 7 day rolling, per platform
+  // PPL = broker P&L / total lots traded. For b-book, should ≈ symbol spread
+  // XAUUSD spread ~30-40pts → expected PPL 30-40+. Below baseline = investigate
+  const PPL_DAILY = [
+    { day:"Today",     ppl:38.2, pnl:5442,  lots:142.5, status:"ok" },
+    { day:"Yesterday", ppl:35.8, pnl:4235,  lots:118.3, status:"ok" },
+    { day:"Mon",       ppl:21.4, pnl:4346,  lots:203.1, status:"low" },
+    { day:"Sun",       ppl:41.1, pnl:3646,  lots:88.7,  status:"ok" },
+    { day:"Sat",       ppl:39.6, pnl:3018,  lots:76.2,  status:"ok" },
+    { day:"Fri",       ppl:36.9, pnl:7210,  lots:195.4, status:"ok" },
+    { day:"Thu",       ppl:18.7, pnl:4149,  lots:221.8, status:"low" },
+  ];
+  const PPL_PLATFORM = [
+    { name:"MT5",          ppl:37.8, lots:612.4, spread:"30-40" },
+    { name:"MT4",          ppl:35.2, lots:288.1, spread:"30-40" },
+    { name:"cTrader",      ppl:41.3, lots:98.6,  spread:"28-35" },
+    { name:"Match-Trader", ppl:22.1, lots:46.4,  spread:"30-40" },
+  ];
+  const PPL_BASELINE = 30;
+  const todayPPL = PPL_DAILY[0];
+  const lowDays = PPL_DAILY.filter(d=>d.status==="low").length;
+
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
       {!loading && stats.totalAccounts > 0 && (
@@ -1156,15 +1179,88 @@ function BrokerOverview() {
           </div>
         </div>
       )}
+
+      {/* PRIMARY DAILY OPS METRICS — PPL sits alongside P&L as a first-class metric */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
-        <Stat label="Total Client Funds" value={$k(totalFunds)} trend={8.4} sub="All accounts" accent={C.green} />
-        <Stat label="Active Clients" value={activeClients} sub={`of ${BROKER_CLIENTS.length} enrolled`} accent={C.green} />
-        <Stat label="KYC Compliance" value={`${kycRate}%`} sub={`${verifiedClients} verified`} accent={kycRate>=80?C.green:C.amber} />
+        <Stat label="Today's P&L" value={"+"+$k(todayPPL.pnl)} trend={5.2} sub="Spread captured today" accent={C.green} />
+        <Stat label="Today's PPL" value={todayPPL.ppl.toFixed(1)+"pts"} sub={`${todayPPL.lots}L traded · baseline ${PPL_BASELINE}pts`} accent={todayPPL.ppl>=PPL_BASELINE?C.green:C.amber} />
+        <Stat label="Total Client Funds" value={$k2(totalFunds)} trend={8.4} sub="All accounts" accent={C.green} />
         <Stat label="AML Flags" value={flaggedPay} sub="Requires review" accent={C.red} />
       </div>
+
+      {/* PPL DAILY DASHBOARD */}
+      <div style={{ display:"grid", gridTemplateColumns:"1.4fr 1fr", gap:14 }}>
+
+        {/* 7-day PPL strip */}
+        <Card>
+          <CardHead
+            title="Points Per Lot — 7 Day Rolling"
+            sub={`B-book health metric. Expected PPL ≈ spread baseline (${PPL_BASELINE}pts). ${lowDays > 0 ? `⚠ ${lowDays} day(s) below baseline — check spread config` : "✓ All days within normal range"}`}
+            accent={lowDays>0?C.amber:C.green}
+          />
+          <div style={{ padding:"4px 24px 20px" }}>
+            {PPL_DAILY.map((d,i)=>{
+              const isLow = d.status==="low";
+              const barPct = Math.min((d.ppl/60)*100,100);
+              const baselinePct = (PPL_BASELINE/60)*100;
+              return (
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
+                  <div style={{ width:60, fontSize:11, color:isLow?C.amber:C.faint, fontWeight:isLow?700:400, flexShrink:0 }}>{d.day}</div>
+                  <div style={{ flex:1, height:22, background:C.hover, borderRadius:4, overflow:"hidden", position:"relative" }}>
+                    <div style={{ height:"100%", width:`${barPct}%`, background:isLow?`${C.amber}80`:C.green, borderRadius:4, transition:"width 0.4s" }} />
+                    {/* Baseline marker */}
+                    <div style={{ position:"absolute", top:0, bottom:0, left:`${baselinePct}%`, width:2, background:C.red, opacity:0.6 }} />
+                  </div>
+                  <div style={{ width:48, fontSize:13, fontFamily:"monospace", fontWeight:800, color:isLow?C.amber:C.green, textAlign:"right", flexShrink:0 }}>{d.ppl.toFixed(1)}</div>
+                  <div style={{ width:52, fontSize:10, color:C.faint, textAlign:"right", flexShrink:0 }}>{$k(d.pnl)}</div>
+                  <div style={{ width:44, fontSize:10, color:C.faint, textAlign:"right", flexShrink:0 }}>{d.lots}L</div>
+                </div>
+              );
+            })}
+            <div style={{ display:"flex", alignItems:"center", gap:16, marginTop:6, fontSize:10, color:C.faint, paddingTop:10, borderTop:`1px solid ${C.border}` }}>
+              <span><span style={{ color:C.green }}>●</span> Normal</span>
+              <span><span style={{ color:C.amber }}>●</span> Below baseline</span>
+              <span><span style={{ color:C.red }}>|</span> Spread baseline ({PPL_BASELINE}pts)</span>
+              <span style={{ marginLeft:"auto" }}>cols: PPL · P&L · Lots</span>
+            </div>
+          </div>
+        </Card>
+
+        {/* Per platform PPL */}
+        <Card>
+          <CardHead title="PPL by Platform" sub="Per-platform breakdown — spot which integration is underperforming" accent={C.blue} />
+          <div style={{ padding:"4px 24px 20px", display:"flex", flexDirection:"column", gap:10 }}>
+            {PPL_PLATFORM.map((p,i)=>{
+              const isLow = p.ppl < PPL_BASELINE;
+              return (
+                <div key={i} style={{ background:C.surface, border:`1px solid ${isLow?C.amber+"40":C.border}`, borderRadius:C.r, padding:"14px 16px" }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
+                    <div>
+                      <div style={{ fontSize:13, fontWeight:700, color:C.text }}>{p.name}</div>
+                      <div style={{ fontSize:10, color:C.faint, marginTop:2 }}>Spread {p.spread}pts · {p.lots}L traded</div>
+                    </div>
+                    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                      {isLow && <Tag color={C.amber}>↓ Investigate</Tag>}
+                      <div style={{ fontSize:20, fontWeight:800, color:isLow?C.amber:C.green, fontFamily:"monospace" }}>{p.ppl.toFixed(1)}</div>
+                    </div>
+                  </div>
+                  <div style={{ height:6, background:C.hover, borderRadius:3, overflow:"hidden", position:"relative" }}>
+                    <div style={{ height:"100%", width:`${Math.min((p.ppl/60)*100,100)}%`, background:isLow?C.amber:C.green, borderRadius:3 }} />
+                    <div style={{ position:"absolute", top:0, bottom:0, left:`${(PPL_BASELINE/60)*100}%`, width:2, background:C.red, opacity:0.5 }} />
+                  </div>
+                </div>
+              );
+            })}
+            <div style={{ padding:"10px 14px", background:C.hover, borderRadius:C.r, fontSize:11, color:C.faint, lineHeight:1.6, marginTop:4 }}>
+              PPL = Broker P&L ÷ Total Lots. B-book long-term profit ≈ spread. If PPL drops below spread baseline, increase spread or review LP config.
+            </div>
+          </div>
+        </Card>
+      </div>
+
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:14 }}>
         {[
-          { label:"Net Exposure", value:$k(BROKER_EXPOSURE.netExposure), color:C.amber, sub:"After hedging — monitor XAUUSD" },
+          { label:"Net Exposure", value:$k2(BROKER_EXPOSURE.netExposure), color:C.amber, sub:"After hedging — monitor XAUUSD" },
           { label:"Compliance Violations", value:BROKER_COMP_VIOLATIONS.length, color:C.red, sub:"FSCA reportable events this cycle" },
           { label:"Automated Decisions", value:"79%", color:C.green, sub:"21% required manual intervention" },
         ].map(m=>(
