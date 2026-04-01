@@ -173,17 +173,35 @@ const BROKER_PAYMENTS = [
 ];
 
 const BROKER_EXPOSURE = {
-  totalClientFunds: 1289500,
-  totalOpenPositions: 724000,
-  netExposure: 418000,
-  hedgedExposure: 306000,
-  floatingPnL: +18490,
-  largestPos: { client:"Ahmed Al-Farsi", size:520000, symbol:"XAUUSD", side:"Buy" },
+  totalClientFunds: 3289500,
+  totalOpenPositions: 2124000,
+  netExposure: 1418000,
+  hedgedExposure: 706000,
+  floatingPnL: +84900,
+  largestPos: { client:"Ahmed Al-Farsi", size:1520000, symbol:"XAUUSD", side:"Buy" },
+  // A-book: routed to LP (high risk / high volume / institutional)
+  // B-book: internalized (regular retail, lower risk)
+  aBook: {
+    clients: 3,
+    volume: 8240000,
+    exposure: 1820000,
+    pnl: +12400,
+    pct: 43,
+    note: "Routed to LP — Raj Patel (latency arb), Ahmed Al-Farsi (VIP $1.2M+), Chen Wei (suspended)"
+  },
+  bBook: {
+    clients: 7,
+    volume: 10940000,
+    exposure: 1469500,
+    pnl: +72500,
+    pct: 57,
+    note: "Internalized — regular retail, standard risk profile, spread captured internally"
+  },
   byAsset: [
-    { asset:"XAUUSD", exposure:312000, pct:43, direction:"Long", risk:"High" },
-    { asset:"EURUSD", exposure:198000, pct:27, direction:"Mixed", risk:"Moderate" },
-    { asset:"NASDAQ", exposure:144000, pct:20, direction:"Long", risk:"Moderate" },
-    { asset:"BTCUSD", exposure:70000, pct:10, direction:"Short", risk:"High" },
+    { asset:"XAUUSD", exposure:1312000, pct:43, direction:"Long", risk:"High" },
+    { asset:"EURUSD", exposure:798000, pct:27, direction:"Mixed", risk:"Moderate" },
+    { asset:"NASDAQ", exposure:644000, pct:20, direction:"Long", risk:"Moderate" },
+    { asset:"BTCUSD", exposure:370000, pct:10, direction:"Short", risk:"High" },
   ],
 };
 
@@ -1543,11 +1561,70 @@ function BrokerExposure() {
         </div>
       </Card>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14 }}>
-        <Stat label="Total Client Funds" value={"$"+(BROKER_EXPOSURE.totalClientFunds/1000).toFixed(0)+"k"} sub="All accounts" accent={C.green} />
-        <Stat label="Open Positions" value={"$"+(BROKER_EXPOSURE.totalOpenPositions/1000).toFixed(0)+"k"} sub="Live exposure" accent={C.blue} />
-        <Stat label="Net Exposure" value={"$"+(BROKER_EXPOSURE.netExposure/1000).toFixed(0)+"k"} sub="After hedging" accent={C.amber} />
+        <Stat label="Total Client Funds" value={"$"+(BROKER_EXPOSURE.totalClientFunds/1000000).toFixed(2)+"M"} sub="All accounts" accent={C.green} />
+        <Stat label="Open Positions" value={"$"+(BROKER_EXPOSURE.totalOpenPositions/1000000).toFixed(2)+"M"} sub="Live exposure" accent={C.blue} />
+        <Stat label="Net Exposure" value={"$"+(BROKER_EXPOSURE.netExposure/1000000).toFixed(2)+"M"} sub="After hedging" accent={C.amber} />
         <Stat label="Hedged Exposure" value={"$"+(BROKER_EXPOSURE.hedgedExposure/1000).toFixed(0)+"k"} sub="LP hedges placed" accent={C.green} />
         <Stat label="Floating P&L" value={(BROKER_EXPOSURE.floatingPnL>0?"+":"")+$k(BROKER_EXPOSURE.floatingPnL)} sub="All open positions" accent={BROKER_EXPOSURE.floatingPnL>=0?C.green:C.red} />
+      </div>
+
+      {/* A-BOOK / B-BOOK SPLIT */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
+        {/* A-Book */}
+        <div style={{ background:C.card, border:`1px solid ${C.blue}30`, borderRadius:C.rL, padding:20 }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:C.blue, fontFamily:"monospace", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>A-Book</div>
+              <div style={{ fontSize:18, fontWeight:800, color:C.text }}>${(BROKER_EXPOSURE.aBook.exposure/1000000).toFixed(2)}M exposure</div>
+            </div>
+            <div style={{ background:`${C.blue}12`, border:`1px solid ${C.blue}25`, borderRadius:8, padding:"6px 14px", fontSize:13, fontWeight:700, color:C.blue }}>{BROKER_EXPOSURE.aBook.pct}% of book</div>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:12 }}>
+            <div style={{ background:C.surface, borderRadius:C.r, padding:"10px 12px" }}>
+              <div style={{ fontSize:9, color:C.faint, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Clients</div>
+              <div style={{ fontSize:16, fontWeight:800, color:C.text }}>{BROKER_EXPOSURE.aBook.clients}</div>
+            </div>
+            <div style={{ background:C.surface, borderRadius:C.r, padding:"10px 12px" }}>
+              <div style={{ fontSize:9, color:C.faint, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Volume</div>
+              <div style={{ fontSize:16, fontWeight:800, color:C.text }}>${(BROKER_EXPOSURE.aBook.volume/1000000).toFixed(1)}M</div>
+            </div>
+            <div style={{ background:C.surface, borderRadius:C.r, padding:"10px 12px" }}>
+              <div style={{ fontSize:9, color:C.faint, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>P&L</div>
+              <div style={{ fontSize:16, fontWeight:800, color:BROKER_EXPOSURE.aBook.pnl>=0?C.green:C.red }}>{BROKER_EXPOSURE.aBook.pnl>0?"+":""}{$k(BROKER_EXPOSURE.aBook.pnl)}</div>
+            </div>
+          </div>
+          <div style={{ fontSize:11, color:C.faint, lineHeight:1.6, padding:"10px 12px", background:C.surface, borderRadius:C.r }}>
+            <strong style={{ color:C.muted }}>Routed to LP:</strong> {BROKER_EXPOSURE.aBook.note}
+          </div>
+        </div>
+
+        {/* B-Book */}
+        <div style={{ background:C.card, border:`1px solid ${C.green}30`, borderRadius:C.rL, padding:20 }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:C.green, fontFamily:"monospace", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>B-Book</div>
+              <div style={{ fontSize:18, fontWeight:800, color:C.text }}>${(BROKER_EXPOSURE.bBook.exposure/1000000).toFixed(2)}M exposure</div>
+            </div>
+            <div style={{ background:`${C.green}12`, border:`1px solid ${C.green}25`, borderRadius:8, padding:"6px 14px", fontSize:13, fontWeight:700, color:C.green }}>{BROKER_EXPOSURE.bBook.pct}% of book</div>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:12 }}>
+            <div style={{ background:C.surface, borderRadius:C.r, padding:"10px 12px" }}>
+              <div style={{ fontSize:9, color:C.faint, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Clients</div>
+              <div style={{ fontSize:16, fontWeight:800, color:C.text }}>{BROKER_EXPOSURE.bBook.clients}</div>
+            </div>
+            <div style={{ background:C.surface, borderRadius:C.r, padding:"10px 12px" }}>
+              <div style={{ fontSize:9, color:C.faint, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Volume</div>
+              <div style={{ fontSize:16, fontWeight:800, color:C.text }}>${(BROKER_EXPOSURE.bBook.volume/1000000).toFixed(1)}M</div>
+            </div>
+            <div style={{ background:C.surface, borderRadius:C.r, padding:"10px 12px" }}>
+              <div style={{ fontSize:9, color:C.faint, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Spread P&L</div>
+              <div style={{ fontSize:16, fontWeight:800, color:C.green }}>+{$k(BROKER_EXPOSURE.bBook.pnl)}</div>
+            </div>
+          </div>
+          <div style={{ fontSize:11, color:C.faint, lineHeight:1.6, padding:"10px 12px", background:C.surface, borderRadius:C.r }}>
+            <strong style={{ color:C.muted }}>Internalized:</strong> {BROKER_EXPOSURE.bBook.note}
+          </div>
+        </div>
       </div>
       <div style={{ background:C.card, border:`1px solid ${C.amber}22`, borderRadius:C.rL, padding:20, display:"flex", gap:16, alignItems:"center" }}>
         <div style={{ width:44, height:44, borderRadius:11, background:C.amberDim, border:`1px solid ${C.amber}30`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:C.amber, flexShrink:0 }}>!</div>
