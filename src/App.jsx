@@ -249,6 +249,95 @@ const BROKER_AUDIT = [
 ];
 
 /* ─────────────────────────────────────────────────────────────
+   TRADES MONITOR DATA — Prop
+   ───────────────────────────────────────────────────────────── */
+const PROP_TRADES_MONITOR = [
+  { id:"TM-001", user:"Marcus Chen", email:"m.chen@gmail.com", account:"MT5-8821", symbol:"EURUSD", direction:"Buy", lots:1.50, pnl:+4320, openTime:"2024-11-12 09:14", closeTime:"2024-11-12 14:22", violation:"No", violationDetail:"" },
+  { id:"TM-002", user:"Priya Nair", email:"priya.n@outlook.com", account:"MT5-8815", symbol:"GBPUSD", direction:"Buy", lots:2.00, pnl:+7100, openTime:"2024-11-11 08:00", closeTime:"2024-11-11 16:45", violation:"No", violationDetail:"" },
+  { id:"TM-003", user:"Jordan Rivers", email:"jrivers@yahoo.com", account:"MT5-8809", symbol:"XAUUSD", direction:"Sell", lots:3.00, pnl:-5100, openTime:"2024-11-08 10:30", closeTime:"2024-11-08 14:30", violation:"Yes", violationDetail:"Max daily loss breached" },
+  { id:"TM-004", user:"Kofi Asante", email:"k.asante@proton.me", account:"MT5-8822", symbol:"EURUSD", direction:"Buy", lots:0.75, pnl:+12400, openTime:"2024-11-12 06:00", closeTime:"2024-11-12 11:15", violation:"No", violationDetail:"" },
+  { id:"TM-005", user:"Dmitri Volkov", email:"dvolkov@temp.io", account:"MT5-8817", symbol:"BTCUSD", direction:"Buy", lots:5.00, pnl:-800, openTime:"2024-11-09 02:00", closeTime:"2024-11-09 07:00", violation:"Yes", violationDetail:"Copied trade — multi-account" },
+  { id:"TM-006", user:"Amara Diallo", email:"a.diallo@gmail.com", account:"MT5-8834", symbol:"USDJPY", direction:"Sell", lots:0.50, pnl:+1100, openTime:"2024-11-11 14:00", closeTime:"2024-11-11 18:30", violation:"No", violationDetail:"" },
+  { id:"TM-007", user:"Wei Zhang", email:"wzhang@corp.com", account:"MT5-8831", symbol:"NASDAQ", direction:"Buy", lots:1.25, pnl:+9800, openTime:"2024-11-10 20:00", closeTime:"2024-11-10 23:45", violation:"No", violationDetail:"" },
+  { id:"TM-008", user:"Fatima Al-Hassan", email:"f.alhassan@gmail.com", account:"MT5-8840", symbol:"XAUUSD", direction:"Buy", lots:4.50, pnl:+2200, openTime:"2024-11-11 11:30", closeTime:"2024-11-11 15:00", violation:"Yes", violationDetail:"Lot size exceeded (max 4.0)" },
+  { id:"TM-009", user:"Alex Thornton", email:"a.thornton@gmail.com", account:"MT5-DEMO", symbol:"EURUSD", direction:"Buy", lots:2.00, pnl:+5200, openTime:"2024-11-10 08:00", closeTime:"2024-11-10 10:15", violation:"Yes", violationDetail:"Consistency rule — 94% single session" },
+  { id:"TM-010", user:"Jordan Rivers", email:"jrivers@yahoo.com", account:"MT5-8809", symbol:"GBPUSD", direction:"Buy", lots:1.00, pnl:-3100, openTime:"2024-11-07 09:00", closeTime:"2024-11-07 12:30", violation:"Yes", violationDetail:"No stop loss placed" },
+  { id:"TM-011", user:"Marcus Chen", email:"m.chen@gmail.com", account:"MT5-8821", symbol:"NASDAQ", direction:"Sell", lots:0.80, pnl:+2100, openTime:"2024-11-10 15:00", closeTime:"2024-11-10 19:00", violation:"No", violationDetail:"" },
+  { id:"TM-012", user:"Kofi Asante", email:"k.asante@proton.me", account:"MT5-8822", symbol:"GBPUSD", direction:"Sell", lots:1.20, pnl:+3800, openTime:"2024-11-11 07:00", closeTime:"2024-11-11 13:00", violation:"No", violationDetail:"" },
+];
+
+/* TRADES MONITOR DATA — Broker */
+const BROKER_TRADES_MONITOR = [
+  { id:"BT-001", user:"James Okafor", email:"j.okafor@gmail.com", account:"ECN-44120", symbol:"EURUSD", direction:"Buy", lots:2.50, pnl:+4240, openTime:"2024-04-21 09:00", closeTime:"Open", violation:"No", violationDetail:"" },
+  { id:"BT-002", user:"Sarah Mitchell", email:"s.mitchell@outlook.com", account:"STD-38200", symbol:"GBPUSD", direction:"Sell", lots:1.00, pnl:-1340, openTime:"2024-04-20 14:00", closeTime:"Open", violation:"No", violationDetail:"" },
+  { id:"BT-003", user:"Raj Patel", email:"raj.p@corp.com", account:"VIP-71000", symbol:"XAUUSD", direction:"Buy", lots:8.00, pnl:+14800, openTime:"2024-04-21 07:30", closeTime:"Open", violation:"Yes", violationDetail:"Latency arbitrage pattern — 38 trades within 180ms of feed refresh" },
+  { id:"BT-004", user:"Chen Wei", email:"cwei@temp.biz", account:"STD-55100", symbol:"BTCUSD", direction:"Sell", lots:3.00, pnl:0, openTime:"2024-02-10 15:00", closeTime:"2024-02-10 15:02", violation:"Yes", violationDetail:"Account suspended — KYC failed" },
+  { id:"BT-005", user:"Amira Hassan", email:"a.hassan@proton.me", account:"ECN-62300", symbol:"EURUSD", direction:"Buy", lots:1.50, pnl:+6200, openTime:"2024-04-21 08:00", closeTime:"Open", violation:"No", violationDetail:"" },
+  { id:"BT-006", user:"Ahmed Al-Farsi", email:"ahmed.af@gmail.com", account:"VIP-90100", symbol:"XAUUSD", direction:"Buy", lots:15.00, pnl:+32400, openTime:"2024-04-20 06:00", closeTime:"Open", violation:"No", violationDetail:"" },
+  { id:"BT-007", user:"Lena Kovac", email:"lkovac@hotmail.com", account:"ECN-47800", symbol:"NASDAQ", direction:"Buy", lots:2.00, pnl:+2290, openTime:"2024-04-21 10:30", closeTime:"Open", violation:"No", violationDetail:"" },
+  { id:"BT-008", user:"Tunde Adeyemi", email:"t.adeyemi@yahoo.com", account:"STD-29400", symbol:"EURUSD", direction:"Buy Limit", lots:1000.00, pnl:0, openTime:"2024-04-19 16:20", closeTime:"Cancelled", violation:"Yes", violationDetail:"Bonus abuse — hedged EURUSD positions" },
+  { id:"BT-009", user:"Nomsa Dlamini", email:"n.dlamini@gmail.com", account:"STD-18900", symbol:"USDJPY", direction:"Sell", lots:0.50, pnl:+1180, openTime:"2024-04-19 12:00", closeTime:"2024-04-19 17:30", violation:"No", violationDetail:"" },
+  { id:"BT-010", user:"Raj Patel", email:"raj.p@corp.com", account:"VIP-71000", symbol:"EURUSD", direction:"Buy", lots:5.00, pnl:+3200, openTime:"2024-04-21 07:30", closeTime:"2024-04-21 07:30", violation:"Yes", violationDetail:"Hold time 1.2s — latency exploit" },
+];
+
+/* ─────────────────────────────────────────────────────────────
+   LOGIN HISTORY DATA — Prop
+   ───────────────────────────────────────────────────────────── */
+const PROP_LOGINS = [
+  { id:"PL-001", user:"Marcus Chen", email:"m.chen@gmail.com", ip:"103.21.244.15", device:"Desktop", browser:"Chrome", os:"macOS", status:"success", ts:"2024-11-12 09:10:22" },
+  { id:"PL-002", user:"Priya Nair", email:"priya.n@outlook.com", ip:"49.207.88.12", device:"Desktop", browser:"Chrome", os:"Windows", status:"success", ts:"2024-11-12 07:55:00" },
+  { id:"PL-003", user:"Jordan Rivers", email:"jrivers@yahoo.com", ip:"172.16.0.5", device:"Desktop", browser:"Firefox", os:"Windows", status:"success", ts:"2024-11-08 10:25:14" },
+  { id:"PL-004", user:"Dmitri Volkov", email:"dvolkov@temp.io", ip:"192.168.1.10", device:"Desktop", browser:"Chrome", os:"Linux", status:"success", ts:"2024-11-09 01:55:30" },
+  { id:"PL-005", user:"Kofi Asante", email:"k.asante@proton.me", ip:"203.0.113.4", device:"Mobile", browser:"Safari", os:"iOS", status:"success", ts:"2024-11-12 05:50:00" },
+  { id:"PL-006", user:"Elena Volkova", email:"e.volkova@mail.ru", ip:"192.168.1.10", device:"Desktop", browser:"Chrome", os:"Windows", status:"success", ts:"2024-11-07 16:40:00" },
+  { id:"PL-007", user:"Alex Thornton", email:"a.thornton@gmail.com", ip:"192.168.1.10", device:"Desktop", browser:"Chrome", os:"Windows", status:"success", ts:"2024-11-10 07:58:11" },
+  { id:"PL-008", user:"Dmitri Volkov", email:"dvolkov@temp.io", ip:"185.220.101.44", device:"Desktop", browser:"Tor Browser", os:"Linux", status:"success", ts:"2024-11-08 23:12:00" },
+  { id:"PL-009", user:"Wei Zhang", email:"wzhang@corp.com", ip:"192.0.2.44", device:"Desktop", browser:"Chrome", os:"macOS", status:"success", ts:"2024-11-10 19:55:00" },
+  { id:"PL-010", user:"Fatima Al-Hassan", email:"f.alhassan@gmail.com", ip:"10.1.1.99", device:"Mobile", browser:"Chrome", os:"Android", status:"success", ts:"2024-11-11 11:30:00" },
+  { id:"PL-011", user:"Carlos Mendez", email:"cmendez@hotmail.com", ip:"172.16.5.20", device:"Desktop", browser:"Edge", os:"Windows", status:"failed", ts:"2024-11-12 08:00:15" },
+  { id:"PL-012", user:"Amara Diallo", email:"a.diallo@gmail.com", ip:"198.51.100.7", device:"Desktop", browser:"Chrome", os:"Linux", status:"success", ts:"2024-11-11 13:50:00" },
+];
+
+/* LOGIN HISTORY DATA — Broker */
+const BROKER_LOGINS = [
+  { id:"BL-001", user:"James Okafor", email:"j.okafor@gmail.com", ip:"197.221.123.102", device:"Desktop", browser:"Chrome", os:"Linux", status:"success", ts:"2024-04-21 09:00:00" },
+  { id:"BL-002", user:"Sarah Mitchell", email:"s.mitchell@outlook.com", ip:"102.182.167.136", device:"Desktop", browser:"Chrome", os:"Windows", status:"success", ts:"2024-04-20 14:00:00" },
+  { id:"BL-003", user:"Raj Patel", email:"raj.p@corp.com", ip:"103.153.130.155", device:"Desktop", browser:"Chrome", os:"macOS", status:"success", ts:"2024-04-21 07:25:00" },
+  { id:"BL-004", user:"Chen Wei", email:"cwei@temp.biz", ip:"154.208.40.59", device:"Desktop", browser:"Chrome", os:"Linux", status:"success", ts:"2024-02-10 14:55:00" },
+  { id:"BL-005", user:"Chen Wei", email:"cwei@temp.biz", ip:"154.208.40.59", device:"Desktop", browser:"Chrome", os:"Linux", status:"failed", ts:"2024-02-11 08:00:00" },
+  { id:"BL-006", user:"Amira Hassan", email:"a.hassan@proton.me", ip:"68.144.91.168", device:"Mobile", browser:"Safari", os:"iOS", status:"success", ts:"2024-04-21 07:58:00" },
+  { id:"BL-007", user:"Viktor Sorokin", email:"vsorokin@mail.ru", ip:"185.220.101.44", device:"Desktop", browser:"Firefox", os:"Linux", status:"success", ts:"2024-03-14 08:30:00" },
+  { id:"BL-008", user:"Nomsa Dlamini", email:"n.dlamini@gmail.com", ip:"105.112.140.205", device:"Desktop", browser:"Chrome", os:"Windows", status:"success", ts:"2024-04-19 11:50:00" },
+  { id:"BL-009", user:"Ahmed Al-Farsi", email:"ahmed.af@gmail.com", ip:"94.56.229.10", device:"Desktop", browser:"Chrome", os:"macOS", status:"success", ts:"2024-04-20 05:50:00" },
+  { id:"BL-010", user:"Lena Kovac", email:"lkovac@hotmail.com", ip:"78.134.22.91", device:"Desktop", browser:"Chrome", os:"Windows", status:"success", ts:"2024-04-21 10:25:00" },
+  { id:"BL-011", user:"Tunde Adeyemi", email:"t.adeyemi@yahoo.com", ip:"105.113.129.196", device:"Desktop", browser:"Chrome", os:"Linux", status:"success", ts:"2024-04-19 16:15:00" },
+  { id:"BL-012", user:"Ahmed Al-Farsi", email:"ahmed.af@gmail.com", ip:"185.220.101.44", device:"Desktop", browser:"Tor Browser", os:"Linux", status:"success", ts:"2024-04-18 02:12:00" },
+];
+
+/* ─────────────────────────────────────────────────────────────
+   STRATEGY REVIEWS DATA — Prop
+   ───────────────────────────────────────────────────────────── */
+const PROP_STRATEGIES = [
+  { id:"SR-001", trader:"Kofi Asante", email:"k.asante@proton.me", account:"MT5-8822", challenge:"Phase 2", file:"Trading_Strategy_KA.pdf", submitted:"2024-11-12", status:"Pending", notes:"" },
+  { id:"SR-002", trader:"Priya Nair", email:"priya.n@outlook.com", account:"MT5-8815", challenge:"Phase 2", file:"Scalping_Strategy_PN.pdf", submitted:"2024-11-11", status:"Approved", notes:"Clear risk parameters. Solid edge on GBPUSD sessions." },
+  { id:"SR-003", trader:"Wei Zhang", email:"wzhang@corp.com", account:"MT5-8831", challenge:"Phase 2", file:"NASDAQ_Breakout_WZ.pdf", submitted:"2024-11-10", status:"Approved", notes:"Well-documented NASDAQ pre-market breakout strategy." },
+  { id:"SR-004", trader:"Marcus Chen", email:"m.chen@gmail.com", account:"MT5-8821", challenge:"Phase 1", file:"EURUSD_Swing_MC.pdf", submitted:"2024-11-09", status:"Pending", notes:"" },
+  { id:"SR-005", trader:"Jordan Rivers", email:"jrivers@yahoo.com", account:"MT5-8809", challenge:"Phase 1", file:"Gold_Scalp_JR.pdf", submitted:"2024-11-07", status:"Rejected", notes:"No risk management framework. Strategy relies on news event gambling." },
+  { id:"SR-006", trader:"Dmitri Volkov", email:"dvolkov@temp.io", account:"MT5-8817", challenge:"Phase 1", file:"BTC_Momentum_DV.pdf", submitted:"2024-11-09", status:"Rejected", notes:"Strategy document is copy-pasted from a YouTube video description." },
+  { id:"SR-007", trader:"Fatima Al-Hassan", email:"f.alhassan@gmail.com", account:"MT5-8840", challenge:"Phase 1", file:"Multi_Pair_FA.pdf", submitted:"2024-11-11", status:"Pending", notes:"" },
+];
+
+/* STRATEGY REVIEWS DATA — Broker */
+const BROKER_STRATEGIES = [
+  { id:"BS-001", trader:"Ahmed Al-Farsi", email:"ahmed.af@gmail.com", account:"VIP-90100", challenge:"VIP Review", file:"Portfolio_Strategy_AAF.pdf", submitted:"2024-04-20", status:"Approved", notes:"Diversified XAUUSD and index strategy. Suitable for VIP tier." },
+  { id:"BS-002", trader:"Raj Patel", email:"raj.p@corp.com", account:"VIP-71000", challenge:"VIP Review", file:"HFT_Strategy_RP.pdf", submitted:"2024-04-10", status:"Rejected", notes:"Strategy is latency arbitrage. Not permitted under broker terms." },
+  { id:"BS-003", trader:"James Okafor", email:"j.okafor@gmail.com", account:"ECN-44120", challenge:"Account Upgrade", file:"ECN_Strategy_JO.pdf", submitted:"2024-04-18", status:"Pending", notes:"" },
+  { id:"BS-004", trader:"Lena Kovac", email:"lkovac@hotmail.com", account:"ECN-47800", challenge:"Account Upgrade", file:"Swing_NASDAQ_LK.pdf", submitted:"2024-04-15", status:"Approved", notes:"Clean swing trading approach. Approved for ECN upgrade." },
+  { id:"BS-005", trader:"Tunde Adeyemi", email:"t.adeyemi@yahoo.com", account:"STD-29400", challenge:"Compliance Review", file:"Bonus_Usage_TA.pdf", submitted:"2024-04-19", status:"Rejected", notes:"Not a genuine strategy document. Submitted to justify bonus withdrawal." },
+  { id:"BS-006", trader:"Nomsa Dlamini", email:"n.dlamini@gmail.com", account:"STD-18900", challenge:"Account Upgrade", file:"USDJPY_Carry_ND.pdf", submitted:"2024-04-16", status:"Pending", notes:"" },
+];
+
+/* ─────────────────────────────────────────────────────────────
    SHARED DATA (KYC and payments for broker use)
    ───────────────────────────────────────────────────────────── */
 const KYC_DATA = {
@@ -2052,6 +2141,434 @@ function BrokerSupport({ setPanel }) {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   TRADES MONITOR — Prop
+   ───────────────────────────────────────────────────────────── */
+function PropTradesMonitor() {
+  const [search, setSearch] = useState("");
+  const [dirFilter, setDirFilter] = useState("All");
+  const [violFilter, setViolFilter] = useState("All");
+  const filtered = PROP_TRADES_MONITOR.filter(t => {
+    const q = search.toLowerCase();
+    const matchQ = !q || t.user.toLowerCase().includes(q) || t.email.toLowerCase().includes(q) || t.account.toLowerCase().includes(q) || t.symbol.toLowerCase().includes(q);
+    const matchDir = dirFilter === "All" || t.direction === dirFilter;
+    const matchViol = violFilter === "All" || (violFilter === "Violations Only" && t.violation === "Yes") || (violFilter === "Clean Only" && t.violation === "No");
+    return matchQ && matchDir && matchViol;
+  });
+  const dirOpts = ["All", "Buy", "Sell"];
+  const violOpts = ["All", "Violations Only", "Clean Only"];
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
+        <Stat label="Total Trades" value={PROP_TRADES_MONITOR.length} sub="This cycle" accent={C.green} />
+        <Stat label="Violations" value={PROP_TRADES_MONITOR.filter(t=>t.violation==="Yes").length} sub="Flagged trades" accent={C.red} />
+        <Stat label="Total P&L" value={$k(PROP_TRADES_MONITOR.reduce((s,t)=>s+t.pnl,0))} sub="All traders" accent={C.green} />
+        <Stat label="Avg Lot Size" value={(PROP_TRADES_MONITOR.reduce((s,t)=>s+t.lots,0)/PROP_TRADES_MONITOR.length).toFixed(2)} sub="Per trade" accent={C.blue} />
+      </div>
+      <Card>
+        <CardHead title="Trades Monitor" sub="Live and recent trades across all trader accounts" accent={C.green} />
+        <div style={{ padding:"14px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", gap:10, flexWrap:"wrap", alignItems:"center" }}>
+          <div style={{ position:"relative", flex:"0 0 240px" }}>
+            <span style={{ position:"absolute", left:11, top:"50%", transform:"translateY(-50%)", color:C.faint, fontSize:13, pointerEvents:"none" }}>⌕</span>
+            <input placeholder="Search by user, account, symbol…" value={search} onChange={e=>setSearch(e.target.value)}
+              style={{ width:"100%", background:C.surface, border:`1px solid ${C.border}`, color:C.text, padding:"8px 14px 8px 32px", borderRadius:C.r, fontSize:12, fontFamily:"inherit" }} />
+          </div>
+          <div style={{ display:"flex", gap:4 }}>
+            {dirOpts.map(o=>(
+              <button key={o} onClick={()=>setDirFilter(o)}
+                style={{ padding:"6px 14px", borderRadius:6, fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit", border:`1px solid ${dirFilter===o?C.green+"50":C.border}`, background:dirFilter===o?C.greenDim:"transparent", color:dirFilter===o?C.green:C.muted, transition:"all 0.12s" }}>{o}</button>
+            ))}
+          </div>
+          <div style={{ display:"flex", gap:4 }}>
+            {violOpts.map(o=>(
+              <button key={o} onClick={()=>setViolFilter(o)}
+                style={{ padding:"6px 14px", borderRadius:6, fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit", border:`1px solid ${violFilter===o?(o==="Violations Only"?C.red:C.green)+"50":C.border}`, background:violFilter===o?(o==="Violations Only"?C.redDim:C.greenDim):"transparent", color:violFilter===o?(o==="Violations Only"?C.red:C.green):C.muted, transition:"all 0.12s" }}>{o}</button>
+            ))}
+          </div>
+        </div>
+        <div style={{ overflowX:"auto" }}>
+          <table>
+            <thead><tr>{["User","Account","Symbol","Direction","Lot Size","P&L","Violation"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+            <tbody>
+              {filtered.map(t=>(
+                <TRow key={t.id} highlight={t.violation==="Yes"}>
+                  <Td><div style={{ display:"flex", flexDirection:"column" }}><span style={{ fontWeight:600, color:C.text, fontSize:13 }}>{t.user}</span><span style={{ fontSize:10, color:C.faint, fontFamily:"monospace" }}>{t.email}</span></div></Td>
+                  <Td><span style={{ fontFamily:"monospace", fontSize:11, color:C.faint, background:C.surface, padding:"2px 8px", borderRadius:4, border:`1px solid ${C.border}` }}>{t.account}</span></Td>
+                  <Td><span style={{ fontWeight:700, color:C.text, fontSize:13 }}>{t.symbol}</span></Td>
+                  <Td><Tag color={t.direction.includes("Buy")?C.green:C.red}>{t.direction}</Tag></Td>
+                  <Td><span style={{ fontFamily:"monospace", fontSize:12 }}>{t.lots.toFixed(2)}</span></Td>
+                  <Td><span style={{ fontFamily:"monospace", fontWeight:700, color:t.pnl>=0?C.green:C.red }}>{t.pnl>=0?"+":""}${Math.abs(t.pnl).toLocaleString()}</span></Td>
+                  <Td>{t.violation==="Yes"?<div style={{ display:"flex", alignItems:"center", gap:6 }}><Pip color={C.red} /><span style={{ fontSize:11, color:C.red, fontWeight:600 }}>{t.violationDetail}</span></div>:<div style={{ display:"flex", alignItems:"center", gap:6 }}><Pip color={C.green} /><span style={{ fontSize:11, color:C.green, fontWeight:600 }}>No</span></div>}</Td>
+                </TRow>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TRADES MONITOR — Broker
+   ───────────────────────────────────────────────────────────── */
+function BrokerTradesMonitor() {
+  const [search, setSearch] = useState("");
+  const [dirFilter, setDirFilter] = useState("All");
+  const [violFilter, setViolFilter] = useState("All");
+  const filtered = BROKER_TRADES_MONITOR.filter(t => {
+    const q = search.toLowerCase();
+    const matchQ = !q || t.user.toLowerCase().includes(q) || t.email.toLowerCase().includes(q) || t.account.toLowerCase().includes(q) || t.symbol.toLowerCase().includes(q);
+    const matchDir = dirFilter === "All" || t.direction.startsWith(dirFilter);
+    const matchViol = violFilter === "All" || (violFilter === "Violations Only" && t.violation === "Yes") || (violFilter === "Clean Only" && t.violation === "No");
+    return matchQ && matchDir && matchViol;
+  });
+  const dirOpts = ["All", "Buy", "Sell"];
+  const violOpts = ["All", "Violations Only", "Clean Only"];
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
+        <Stat label="Total Trades" value={BROKER_TRADES_MONITOR.length} sub="This cycle" accent={C.blue} />
+        <Stat label="Violations" value={BROKER_TRADES_MONITOR.filter(t=>t.violation==="Yes").length} sub="Flagged trades" accent={C.red} />
+        <Stat label="Open P&L" value={$k(BROKER_TRADES_MONITOR.filter(t=>t.closeTime==="Open").reduce((s,t)=>s+t.pnl,0))} sub="Open positions" accent={C.green} />
+        <Stat label="Open Positions" value={BROKER_TRADES_MONITOR.filter(t=>t.closeTime==="Open").length} sub="Currently active" accent={C.blue} />
+      </div>
+      <Card>
+        <CardHead title="Trades Monitor" sub="Live and recent trades across all client accounts" accent={C.blue} />
+        <div style={{ padding:"14px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", gap:10, flexWrap:"wrap", alignItems:"center" }}>
+          <div style={{ position:"relative", flex:"0 0 240px" }}>
+            <span style={{ position:"absolute", left:11, top:"50%", transform:"translateY(-50%)", color:C.faint, fontSize:13, pointerEvents:"none" }}>⌕</span>
+            <input placeholder="Search by user, account, symbol…" value={search} onChange={e=>setSearch(e.target.value)}
+              style={{ width:"100%", background:C.surface, border:`1px solid ${C.border}`, color:C.text, padding:"8px 14px 8px 32px", borderRadius:C.r, fontSize:12, fontFamily:"inherit" }} />
+          </div>
+          <div style={{ display:"flex", gap:4 }}>
+            {dirOpts.map(o=>(
+              <button key={o} onClick={()=>setDirFilter(o)}
+                style={{ padding:"6px 14px", borderRadius:6, fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit", border:`1px solid ${dirFilter===o?C.blue+"50":C.border}`, background:dirFilter===o?C.blueDim:"transparent", color:dirFilter===o?C.blue:C.muted, transition:"all 0.12s" }}>{o}</button>
+            ))}
+          </div>
+          <div style={{ display:"flex", gap:4 }}>
+            {violOpts.map(o=>(
+              <button key={o} onClick={()=>setViolFilter(o)}
+                style={{ padding:"6px 14px", borderRadius:6, fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit", border:`1px solid ${violFilter===o?(o==="Violations Only"?C.red:C.green)+"50":C.border}`, background:violFilter===o?(o==="Violations Only"?C.redDim:C.greenDim):"transparent", color:violFilter===o?(o==="Violations Only"?C.red:C.green):C.muted, transition:"all 0.12s" }}>{o}</button>
+            ))}
+          </div>
+        </div>
+        <div style={{ overflowX:"auto" }}>
+          <table>
+            <thead><tr>{["User","Account","Symbol","Direction","Lot Size","P&L","Violation"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+            <tbody>
+              {filtered.map(t=>(
+                <TRow key={t.id} highlight={t.violation==="Yes"}>
+                  <Td><div style={{ display:"flex", flexDirection:"column" }}><span style={{ fontWeight:600, color:C.text, fontSize:13 }}>{t.user}</span><span style={{ fontSize:10, color:C.faint, fontFamily:"monospace" }}>{t.email}</span></div></Td>
+                  <Td><span style={{ fontFamily:"monospace", fontSize:11, color:C.faint, background:C.surface, padding:"2px 8px", borderRadius:4, border:`1px solid ${C.border}` }}>{t.account}</span></Td>
+                  <Td><span style={{ fontWeight:700, color:C.text, fontSize:13 }}>{t.symbol}</span></Td>
+                  <Td><Tag color={t.direction.includes("Buy")?C.green:C.red}>{t.direction}</Tag></Td>
+                  <Td><span style={{ fontFamily:"monospace", fontSize:12 }}>{t.lots.toFixed(2)}</span></Td>
+                  <Td><span style={{ fontFamily:"monospace", fontWeight:700, color:t.pnl>=0?C.green:t.pnl<0?C.red:C.faint }}>{t.pnl>=0?"+":""}${Math.abs(t.pnl).toLocaleString()}</span></Td>
+                  <Td>{t.violation==="Yes"?<div style={{ display:"flex", alignItems:"center", gap:6 }}><Pip color={C.red} /><span style={{ fontSize:11, color:C.red, fontWeight:600, maxWidth:200 }}>{t.violationDetail}</span></div>:<div style={{ display:"flex", alignItems:"center", gap:6 }}><Pip color={C.green} /><span style={{ fontSize:11, color:C.green, fontWeight:600 }}>No</span></div>}</Td>
+                </TRow>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   LOGIN HISTORY — Prop
+   ───────────────────────────────────────────────────────────── */
+function PropLoginHistory() {
+  const [search, setSearch] = useState("");
+  const filtered = PROP_LOGINS.filter(l => {
+    const q = search.toLowerCase();
+    return !q || l.user.toLowerCase().includes(q) || l.email.toLowerCase().includes(q) || l.ip.includes(q) || l.browser.toLowerCase().includes(q);
+  });
+  const ipClusters = {};
+  PROP_LOGINS.forEach(l => { ipClusters[l.ip] = (ipClusters[l.ip]||0)+1; });
+  const sharedIps = Object.entries(ipClusters).filter(([,c])=>c>1);
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
+        <Stat label="Total Logins" value={PROP_LOGINS.length} sub="This cycle" accent={C.green} />
+        <Stat label="Failed Logins" value={PROP_LOGINS.filter(l=>l.status==="failed").length} sub="Blocked attempts" accent={C.red} />
+        <Stat label="Unique IPs" value={new Set(PROP_LOGINS.map(l=>l.ip)).size} sub="Distinct addresses" accent={C.blue} />
+        <Stat label="IP Clusters" value={sharedIps.length} sub="Shared IP addresses" accent={sharedIps.length>0?C.amber:C.green} />
+      </div>
+      {sharedIps.length > 0 && (
+        <div style={{ background:C.card, border:`1px solid ${C.amber}25`, borderRadius:C.rL, padding:"14px 20px", display:"flex", alignItems:"flex-start", gap:12 }}>
+          <span style={{ fontSize:16, flexShrink:0 }}>⚠</span>
+          <div style={{ fontSize:12, color:C.muted, lineHeight:1.7 }}>
+            <strong style={{ color:C.text }}>IP Cluster Detection</strong><br/>
+            {sharedIps.map(([ip,count])=>{
+              const users = [...new Set(PROP_LOGINS.filter(l=>l.ip===ip).map(l=>l.user))];
+              return <div key={ip} style={{ marginTop:4 }}><span style={{ fontFamily:"monospace", color:C.amber }}>{ip}</span> — {count} logins across {users.length} users: <span style={{ color:C.text }}>{users.join(", ")}</span></div>;
+            })}
+          </div>
+        </div>
+      )}
+      <Card>
+        <CardHead title="Login History" sub="Track user login activity, IP addresses, devices and browsers" accent={C.green} right={<Tag color={C.green}>Live</Tag>} />
+        <div style={{ padding:"14px 20px", borderBottom:`1px solid ${C.border}` }}>
+          <div style={{ position:"relative", maxWidth:320 }}>
+            <span style={{ position:"absolute", left:11, top:"50%", transform:"translateY(-50%)", color:C.faint, fontSize:13, pointerEvents:"none" }}>⌕</span>
+            <input placeholder="Search by email, IP, browser…" value={search} onChange={e=>setSearch(e.target.value)}
+              style={{ width:"100%", background:C.surface, border:`1px solid ${C.border}`, color:C.text, padding:"8px 14px 8px 32px", borderRadius:C.r, fontSize:12, fontFamily:"inherit" }} />
+          </div>
+        </div>
+        <div style={{ overflowX:"auto" }}>
+          <table>
+            <thead><tr>{["User","IP Address","Device","Browser","OS","Status","Date & Time"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+            <tbody>
+              {filtered.map(l=>{
+                const isShared = ipClusters[l.ip] > 1;
+                return (
+                  <TRow key={l.id} highlight={l.status==="failed"}>
+                    <Td><div style={{ display:"flex", flexDirection:"column" }}><span style={{ fontWeight:600, color:C.text, fontSize:13 }}>{l.user}</span><span style={{ fontSize:10, color:C.faint, fontFamily:"monospace" }}>{l.email}</span></div></Td>
+                    <Td><div style={{ display:"flex", alignItems:"center", gap:6 }}><span style={{ fontFamily:"monospace", fontSize:12, color:isShared?C.amber:C.muted }}>{l.ip}</span>{isShared && <span style={{ fontSize:8, fontWeight:700, color:C.amber, background:C.amberDim, border:`1px solid ${C.amber}30`, borderRadius:3, padding:"1px 5px" }}>SHARED</span>}</div></Td>
+                    <Td><div style={{ display:"flex", alignItems:"center", gap:6 }}><span style={{ fontSize:12 }}>{l.device==="Mobile"?"📱":"🖥"}</span><span style={{ fontSize:12 }}>{l.device}</span></div></Td>
+                    <Td><span style={{ fontSize:12 }}>{l.browser}</span></Td>
+                    <Td><span style={{ fontSize:12 }}>{l.os}</span></Td>
+                    <Td><Tag color={l.status==="success"?C.green:C.red}>{l.status}</Tag></Td>
+                    <Td><span style={{ fontFamily:"monospace", fontSize:11, color:C.faint, whiteSpace:"nowrap" }}>{l.ts}</span></Td>
+                  </TRow>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   LOGIN HISTORY — Broker
+   ───────────────────────────────────────────────────────────── */
+function BrokerLoginHistory() {
+  const [search, setSearch] = useState("");
+  const filtered = BROKER_LOGINS.filter(l => {
+    const q = search.toLowerCase();
+    return !q || l.user.toLowerCase().includes(q) || l.email.toLowerCase().includes(q) || l.ip.includes(q) || l.browser.toLowerCase().includes(q);
+  });
+  const ipClusters = {};
+  BROKER_LOGINS.forEach(l => { ipClusters[l.ip] = (ipClusters[l.ip]||0)+1; });
+  const sharedIps = Object.entries(ipClusters).filter(([,c])=>c>1);
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
+        <Stat label="Total Logins" value={BROKER_LOGINS.length} sub="This cycle" accent={C.blue} />
+        <Stat label="Failed Logins" value={BROKER_LOGINS.filter(l=>l.status==="failed").length} sub="Blocked attempts" accent={C.red} />
+        <Stat label="Unique IPs" value={new Set(BROKER_LOGINS.map(l=>l.ip)).size} sub="Distinct addresses" accent={C.blue} />
+        <Stat label="IP Clusters" value={sharedIps.length} sub="Shared IP addresses" accent={sharedIps.length>0?C.amber:C.green} />
+      </div>
+      {sharedIps.length > 0 && (
+        <div style={{ background:C.card, border:`1px solid ${C.amber}25`, borderRadius:C.rL, padding:"14px 20px", display:"flex", alignItems:"flex-start", gap:12 }}>
+          <span style={{ fontSize:16, flexShrink:0 }}>⚠</span>
+          <div style={{ fontSize:12, color:C.muted, lineHeight:1.7 }}>
+            <strong style={{ color:C.text }}>IP Cluster Detection</strong><br/>
+            {sharedIps.map(([ip,count])=>{
+              const users = [...new Set(BROKER_LOGINS.filter(l=>l.ip===ip).map(l=>l.user))];
+              return <div key={ip} style={{ marginTop:4 }}><span style={{ fontFamily:"monospace", color:C.amber }}>{ip}</span> — {count} logins across {users.length} user(s): <span style={{ color:C.text }}>{users.join(", ")}</span></div>;
+            })}
+          </div>
+        </div>
+      )}
+      <Card>
+        <CardHead title="Login History" sub="Track client login activity, IP addresses, devices and browsers" accent={C.blue} right={<Tag color={C.blue}>Live</Tag>} />
+        <div style={{ padding:"14px 20px", borderBottom:`1px solid ${C.border}` }}>
+          <div style={{ position:"relative", maxWidth:320 }}>
+            <span style={{ position:"absolute", left:11, top:"50%", transform:"translateY(-50%)", color:C.faint, fontSize:13, pointerEvents:"none" }}>⌕</span>
+            <input placeholder="Search by email, IP, browser…" value={search} onChange={e=>setSearch(e.target.value)}
+              style={{ width:"100%", background:C.surface, border:`1px solid ${C.border}`, color:C.text, padding:"8px 14px 8px 32px", borderRadius:C.r, fontSize:12, fontFamily:"inherit" }} />
+          </div>
+        </div>
+        <div style={{ overflowX:"auto" }}>
+          <table>
+            <thead><tr>{["User","IP Address","Device","Browser","OS","Status","Date & Time"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+            <tbody>
+              {filtered.map(l=>{
+                const isShared = ipClusters[l.ip] > 1;
+                return (
+                  <TRow key={l.id} highlight={l.status==="failed"}>
+                    <Td><div style={{ display:"flex", flexDirection:"column" }}><span style={{ fontWeight:600, color:C.text, fontSize:13 }}>{l.user}</span><span style={{ fontSize:10, color:C.faint, fontFamily:"monospace" }}>{l.email}</span></div></Td>
+                    <Td><div style={{ display:"flex", alignItems:"center", gap:6 }}><span style={{ fontFamily:"monospace", fontSize:12, color:isShared?C.amber:C.muted }}>{l.ip}</span>{isShared && <span style={{ fontSize:8, fontWeight:700, color:C.amber, background:C.amberDim, border:`1px solid ${C.amber}30`, borderRadius:3, padding:"1px 5px" }}>SHARED</span>}</div></Td>
+                    <Td><div style={{ display:"flex", alignItems:"center", gap:6 }}><span style={{ fontSize:12 }}>{l.device==="Mobile"?"📱":"🖥"}</span><span style={{ fontSize:12 }}>{l.device}</span></div></Td>
+                    <Td><span style={{ fontSize:12 }}>{l.browser}</span></Td>
+                    <Td><span style={{ fontSize:12 }}>{l.os}</span></Td>
+                    <Td><Tag color={l.status==="success"?C.green:C.red}>{l.status}</Tag></Td>
+                    <Td><span style={{ fontFamily:"monospace", fontSize:11, color:C.faint, whiteSpace:"nowrap" }}>{l.ts}</span></Td>
+                  </TRow>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   STRATEGY REVIEWS — Prop
+   ───────────────────────────────────────────────────────────── */
+function PropStrategyReviews() {
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [actionStates, setActionStates] = useState({});
+  const filtered = PROP_STRATEGIES.filter(s => {
+    const q = search.toLowerCase();
+    const matchQ = !q || s.trader.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) || s.account.toLowerCase().includes(q);
+    const matchStatus = statusFilter === "All" || s.status === statusFilter;
+    return matchQ && matchStatus;
+  });
+  const statOpts = ["All", "Pending", "Approved", "Rejected"];
+  const reviewStatusColor = (s) => ({ Pending:C.amber, Approved:C.green, Rejected:C.red }[s] || C.faint);
+  const handleAction = (id, action) => {
+    setActionStates(prev => ({ ...prev, [id]: action }));
+    setTimeout(() => setActionStates(prev => ({ ...prev, [id]: action + "_done" })), 800);
+  };
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
+        <Stat label="Total Submissions" value={PROP_STRATEGIES.length} sub="This cycle" accent={C.green} />
+        <Stat label="Pending Review" value={PROP_STRATEGIES.filter(s=>s.status==="Pending").length} sub="Awaiting action" accent={C.amber} />
+        <Stat label="Approved" value={PROP_STRATEGIES.filter(s=>s.status==="Approved").length} sub="Cleared" accent={C.green} />
+        <Stat label="Rejected" value={PROP_STRATEGIES.filter(s=>s.status==="Rejected").length} sub="Sent back" accent={C.red} />
+      </div>
+      <Card>
+        <CardHead title="Strategy Reviews" sub="Review trader strategy documents for funded accounts" accent={C.green} />
+        <div style={{ padding:"14px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", gap:10, flexWrap:"wrap", alignItems:"center" }}>
+          <div style={{ position:"relative", flex:"0 0 240px" }}>
+            <span style={{ position:"absolute", left:11, top:"50%", transform:"translateY(-50%)", color:C.faint, fontSize:13, pointerEvents:"none" }}>⌕</span>
+            <input placeholder="Search by trader, account…" value={search} onChange={e=>setSearch(e.target.value)}
+              style={{ width:"100%", background:C.surface, border:`1px solid ${C.border}`, color:C.text, padding:"8px 14px 8px 32px", borderRadius:C.r, fontSize:12, fontFamily:"inherit" }} />
+          </div>
+          <div style={{ display:"flex", gap:4 }}>
+            {statOpts.map(o=>(
+              <button key={o} onClick={()=>setStatusFilter(o)}
+                style={{ padding:"6px 14px", borderRadius:6, fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit", border:`1px solid ${statusFilter===o?reviewStatusColor(o)+"50":C.border}`, background:statusFilter===o?`${reviewStatusColor(o)}14`:"transparent", color:statusFilter===o?reviewStatusColor(o):C.muted, transition:"all 0.12s" }}>{o}</button>
+            ))}
+          </div>
+        </div>
+        <div style={{ overflowX:"auto" }}>
+          <table>
+            <thead><tr>{["Trader","Account","Challenge","File","Submitted","Status","Actions"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+            <tbody>
+              {filtered.map(s=>{
+                const aState = actionStates[s.id];
+                return (
+                  <TRow key={s.id}>
+                    <Td><div style={{ display:"flex", flexDirection:"column" }}><span style={{ fontWeight:600, color:C.text, fontSize:13 }}>{s.trader}</span><span style={{ fontSize:10, color:C.faint, fontFamily:"monospace" }}>{s.email}</span></div></Td>
+                    <Td><span style={{ fontFamily:"monospace", fontSize:11, color:C.faint, background:C.surface, padding:"2px 8px", borderRadius:4, border:`1px solid ${C.border}` }}>{s.account}</span></Td>
+                    <Td><Tag color={C.blue}>{s.challenge}</Tag></Td>
+                    <Td><div style={{ display:"flex", alignItems:"center", gap:6 }}><span style={{ fontSize:13, color:C.green }}>📄</span><span style={{ fontSize:12, color:C.green, cursor:"pointer" }}>{s.file}</span></div></Td>
+                    <Td><span style={{ fontSize:12, color:C.muted }}>{s.submitted}</span></Td>
+                    <Td><Tag color={reviewStatusColor(s.status)}>{aState?.endsWith("_done") ? (aState.startsWith("approve")?"Approved":"Rejected") : s.status}</Tag></Td>
+                    <Td>
+                      {s.status === "Pending" && !aState?.endsWith("_done") ? (
+                        <div style={{ display:"flex", gap:6 }}>
+                          <button onClick={()=>handleAction(s.id,"approve")} disabled={!!aState}
+                            style={{ width:28, height:28, borderRadius:6, border:`1px solid ${C.green}40`, background:aState==="approve"?C.greenDim:"transparent", color:C.green, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"inherit" }}>✓</button>
+                          <button onClick={()=>handleAction(s.id,"reject")} disabled={!!aState}
+                            style={{ width:28, height:28, borderRadius:6, border:`1px solid ${C.red}40`, background:aState==="reject"?C.redDim:"transparent", color:C.red, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"inherit" }}>✕</button>
+                        </div>
+                      ) : s.notes ? (
+                        <span style={{ fontSize:11, color:C.faint, maxWidth:200, display:"inline-block" }}>{s.notes.length > 40 ? s.notes.slice(0,40)+"…" : s.notes}</span>
+                      ) : null}
+                    </Td>
+                  </TRow>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   STRATEGY REVIEWS — Broker
+   ───────────────────────────────────────────────────────────── */
+function BrokerStrategyReviews() {
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [actionStates, setActionStates] = useState({});
+  const filtered = BROKER_STRATEGIES.filter(s => {
+    const q = search.toLowerCase();
+    const matchQ = !q || s.trader.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) || s.account.toLowerCase().includes(q);
+    const matchStatus = statusFilter === "All" || s.status === statusFilter;
+    return matchQ && matchStatus;
+  });
+  const statOpts = ["All", "Pending", "Approved", "Rejected"];
+  const reviewStatusColor = (s) => ({ Pending:C.amber, Approved:C.green, Rejected:C.red }[s] || C.faint);
+  const handleAction = (id, action) => {
+    setActionStates(prev => ({ ...prev, [id]: action }));
+    setTimeout(() => setActionStates(prev => ({ ...prev, [id]: action + "_done" })), 800);
+  };
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
+        <Stat label="Total Submissions" value={BROKER_STRATEGIES.length} sub="This cycle" accent={C.blue} />
+        <Stat label="Pending Review" value={BROKER_STRATEGIES.filter(s=>s.status==="Pending").length} sub="Awaiting action" accent={C.amber} />
+        <Stat label="Approved" value={BROKER_STRATEGIES.filter(s=>s.status==="Approved").length} sub="Cleared" accent={C.green} />
+        <Stat label="Rejected" value={BROKER_STRATEGIES.filter(s=>s.status==="Rejected").length} sub="Sent back" accent={C.red} />
+      </div>
+      <Card>
+        <CardHead title="Strategy Reviews" sub="Review client strategy documents for account upgrades and compliance" accent={C.blue} />
+        <div style={{ padding:"14px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", gap:10, flexWrap:"wrap", alignItems:"center" }}>
+          <div style={{ position:"relative", flex:"0 0 240px" }}>
+            <span style={{ position:"absolute", left:11, top:"50%", transform:"translateY(-50%)", color:C.faint, fontSize:13, pointerEvents:"none" }}>⌕</span>
+            <input placeholder="Search by client, account…" value={search} onChange={e=>setSearch(e.target.value)}
+              style={{ width:"100%", background:C.surface, border:`1px solid ${C.border}`, color:C.text, padding:"8px 14px 8px 32px", borderRadius:C.r, fontSize:12, fontFamily:"inherit" }} />
+          </div>
+          <div style={{ display:"flex", gap:4 }}>
+            {statOpts.map(o=>(
+              <button key={o} onClick={()=>setStatusFilter(o)}
+                style={{ padding:"6px 14px", borderRadius:6, fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit", border:`1px solid ${statusFilter===o?reviewStatusColor(o)+"50":C.border}`, background:statusFilter===o?`${reviewStatusColor(o)}14`:"transparent", color:statusFilter===o?reviewStatusColor(o):C.muted, transition:"all 0.12s" }}>{o}</button>
+            ))}
+          </div>
+        </div>
+        <div style={{ overflowX:"auto" }}>
+          <table>
+            <thead><tr>{["Client","Account","Review Type","File","Submitted","Status","Actions"].map(h=><Th key={h}>{h}</Th>)}</tr></thead>
+            <tbody>
+              {filtered.map(s=>{
+                const aState = actionStates[s.id];
+                return (
+                  <TRow key={s.id}>
+                    <Td><div style={{ display:"flex", flexDirection:"column" }}><span style={{ fontWeight:600, color:C.text, fontSize:13 }}>{s.trader}</span><span style={{ fontSize:10, color:C.faint, fontFamily:"monospace" }}>{s.email}</span></div></Td>
+                    <Td><span style={{ fontFamily:"monospace", fontSize:11, color:C.faint, background:C.surface, padding:"2px 8px", borderRadius:4, border:`1px solid ${C.border}` }}>{s.account}</span></Td>
+                    <Td><Tag color={C.blue}>{s.challenge}</Tag></Td>
+                    <Td><div style={{ display:"flex", alignItems:"center", gap:6 }}><span style={{ fontSize:13, color:C.blue }}>📄</span><span style={{ fontSize:12, color:C.blue, cursor:"pointer" }}>{s.file}</span></div></Td>
+                    <Td><span style={{ fontSize:12, color:C.muted }}>{s.submitted}</span></Td>
+                    <Td><Tag color={reviewStatusColor(s.status)}>{aState?.endsWith("_done") ? (aState.startsWith("approve")?"Approved":"Rejected") : s.status}</Tag></Td>
+                    <Td>
+                      {s.status === "Pending" && !aState?.endsWith("_done") ? (
+                        <div style={{ display:"flex", gap:6 }}>
+                          <button onClick={()=>handleAction(s.id,"approve")} disabled={!!aState}
+                            style={{ width:28, height:28, borderRadius:6, border:`1px solid ${C.green}40`, background:aState==="approve"?C.greenDim:"transparent", color:C.green, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"inherit" }}>✓</button>
+                          <button onClick={()=>handleAction(s.id,"reject")} disabled={!!aState}
+                            style={{ width:28, height:28, borderRadius:6, border:`1px solid ${C.red}40`, background:aState==="reject"?C.redDim:"transparent", color:C.red, cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"inherit" }}>✕</button>
+                        </div>
+                      ) : s.notes ? (
+                        <span style={{ fontSize:11, color:C.faint, maxWidth:200, display:"inline-block" }}>{s.notes.length > 40 ? s.notes.slice(0,40)+"…" : s.notes}</span>
+                      ) : null}
+                    </Td>
+                  </TRow>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
    NAV CONFIGS — completely separate per mode
    ───────────────────────────────────────────────────────────── */
 const PROP_NAVS = [
@@ -2060,10 +2577,13 @@ const PROP_NAVS = [
   { id:"lifecycle", label:"Trader Lifecycle", icon:"◎", group:"─ Operations ─" },
   { id:"payouts", label:"Payouts / Withdrawals", icon:"$", group:null },
   { id:"violations", label:"Rule Violations", icon:"⚑", group:null },
+  { id:"trades", label:"Trades Monitor", icon:"↗↙", group:null },
   { id:"automation", label:"Automation", icon:"⚡", group:null },
   { id:"risk", label:"Risk Detection", icon:"⊘", group:"─ Management ─" },
   { id:"riskpay", label:"Risk & Payouts", icon:"⊕", group:null },
-  { id:"revenue", label:"Revenue", icon:"↗", group:"─ Analytics ─" },
+  { id:"strategies", label:"Strategy Reviews", icon:"📋", group:null },
+  { id:"logins", label:"Login History", icon:"⊕", group:"─ Analytics ─" },
+  { id:"revenue", label:"Revenue", icon:"↗", group:null },
   { id:"support", label:"Support", icon:"✉", group:null },
 ];
 
@@ -2074,26 +2594,31 @@ const BROKER_NAVS = [
   { id:"b_payments", label:"Payments Monitor", icon:"⇄", group:null },
   { id:"b_kyc", label:"KYC / Compliance", icon:"✦", group:null },
   { id:"b_exposure", label:"Exposure Overview", icon:"◉", group:null },
+  { id:"b_trades", label:"Trades Monitor", icon:"↗↙", group:null },
   { id:"b_violations", label:"Compliance Violations", icon:"⚑", group:null },
   { id:"b_risk", label:"AML & Risk", icon:"⊘", group:"─ Management ─" },
+  { id:"b_strategies", label:"Strategy Reviews", icon:"📋", group:null },
   { id:"b_ibs", label:"IB Portal", icon:"◈", group:null },
-  { id:"b_audit", label:"Audit Log", icon:"≡", group:"─ Compliance ─" },
+  { id:"b_logins", label:"Login History", icon:"⊕", group:"─ Compliance ─" },
+  { id:"b_audit", label:"Audit Log", icon:"≡", group:null },
   { id:"b_support", label:"Client Support", icon:"✉", group:null },
 ];
 
 const PROP_TITLES = {
   overview:"Operations Overview", accounts:"Account Management", lifecycle:"Trader Lifecycle",
   payouts:"Payouts / Withdrawals", violations:"Rule Violations Panel",
-  automation:"Automation Engine", risk:"Risk Detection",
-  riskpay:"Risk & Payouts", revenue:"Revenue Analytics", support:"Support Center",
+  trades:"Trades Monitor", automation:"Automation Engine", risk:"Risk Detection",
+  riskpay:"Risk & Payouts", strategies:"Strategy Reviews",
+  logins:"Login History", revenue:"Revenue Analytics", support:"Support Center",
 };
 
 const BROKER_TITLES = {
   b_overview:"Operations Overview", b_accounts:"Account Management", b_clients:"Client Management",
   b_payments:"Payments Monitor", b_kyc:"KYC / Compliance",
-  b_exposure:"Exposure Overview", b_violations:"Compliance Violations",
+  b_exposure:"Exposure Overview", b_trades:"Trades Monitor",
+  b_violations:"Compliance Violations", b_strategies:"Strategy Reviews",
   b_risk:"AML & Risk Detection", b_ibs:"IB Portal",
-  b_audit:"Compliance Audit Log", b_support:"Client Support",
+  b_logins:"Login History", b_audit:"Compliance Audit Log", b_support:"Client Support",
 };
 
 /* ─────────────────────────────────────────────────────────────
@@ -2152,12 +2677,16 @@ function getBadge(id, mode) {
     if(id==="violations") return RULE_VIOLATIONS.length||null;
     if(id==="risk") return TRADERS.filter(t=>t.riskScore>=70).length||null;
     if(id==="support") return PROP_TICKETS.filter(t=>t.status==="open"||t.status==="escalated").length||null;
+    if(id==="trades") return PROP_TRADES_MONITOR.filter(t=>t.violation==="Yes").length||null;
+    if(id==="strategies") return PROP_STRATEGIES.filter(s=>s.status==="Pending").length||null;
   } else {
     if(id==="b_payments") return BROKER_PAYMENTS.filter(p=>p.status==="Flagged").length||null;
     if(id==="b_kyc") return Object.values(BROKER_KYC).filter(k=>k.status==="Pending"||k.status==="Failed").length||null;
     if(id==="b_violations") return BROKER_COMP_VIOLATIONS.filter(v=>v.severity==="Critical"||v.severity==="High").length||null;
     if(id==="b_risk") return BROKER_RISKS.filter(r=>r.severity==="Critical"||r.severity==="High").length||null;
     if(id==="b_support") return BROKER_TICKETS.filter(t=>t.status==="open"||t.status==="escalated").length||null;
+    if(id==="b_trades") return BROKER_TRADES_MONITOR.filter(t=>t.violation==="Yes").length||null;
+    if(id==="b_strategies") return BROKER_STRATEGIES.filter(s=>s.status==="Pending").length||null;
   }
   return null;
 }
@@ -2303,6 +2832,9 @@ export default function App() {
         {mode==="prop" && tab==="riskpay" && <PropRiskPayouts />}
         {mode==="prop" && tab==="revenue" && <PropRevenue />}
         {mode==="prop" && tab==="support" && <PropSupport setPanel={setPanel} />}
+        {mode==="prop" && tab==="trades" && <PropTradesMonitor />}
+        {mode==="prop" && tab==="logins" && <PropLoginHistory />}
+        {mode==="prop" && tab==="strategies" && <PropStrategyReviews />}
 
         {/* BROKER PAGES */}
         {mode==="broker" && tab==="b_overview" && <BrokerOverview />}
@@ -2316,6 +2848,9 @@ export default function App() {
         {mode==="broker" && tab==="b_ibs" && <BrokerIBPortal />}
         {mode==="broker" && tab==="b_audit" && <BrokerAuditLog />}
         {mode==="broker" && tab==="b_support" && <BrokerSupport setPanel={setPanel} />}
+        {mode==="broker" && tab==="b_trades" && <BrokerTradesMonitor />}
+        {mode==="broker" && tab==="b_logins" && <BrokerLoginHistory />}
+        {mode==="broker" && tab==="b_strategies" && <BrokerStrategyReviews />}
       </main>
 
       {panel && <TicketPanel ticket={panel} mode={mode} onClose={()=>setPanel(null)} onReply={t=>{ setPanel(null); setReplyTo(t); }} />}
