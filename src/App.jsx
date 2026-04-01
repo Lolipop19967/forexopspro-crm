@@ -1937,7 +1937,10 @@ export default function App() {
             return (
               <div key={n.id}>
                 {n.group && <div style={{ fontSize:9, color:C.faint, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", padding:"10px 12px 4px", opacity:0.5 }}>{n.group}</div>}
-                <button onClick={()=>handleTabSwitch(n.id)} style={{ display:"flex", alignItems:"center", gap:9, padding:"8px 12px", borderRadius:8, background:active?`${accentColor}10`:"transparent", border:`1px solid ${active?accentColor+"30":"transparent"}`, color:active?accentColor:C.muted, fontSize:13, fontWeight:active?600:400, fontFamily:"inherit", transition:"all 0.12s", textAlign:"left", width:"100%", cursor:"pointer" }}>
+                <button onClick={()=>handleTabSwitch(n.id)}
+                  onMouseEnter={e=>{ if(!active) e.currentTarget.style.background=C.hover; e.currentTarget.style.color=active?accentColor:C.text; }}
+                  onMouseLeave={e=>{ if(!active) e.currentTarget.style.background="transparent"; e.currentTarget.style.color=active?accentColor:C.muted; }}
+                  style={{ display:"flex", alignItems:"center", gap:9, padding:"8px 12px", borderRadius:8, background:active?`${accentColor}10`:"transparent", border:`1px solid ${active?accentColor+"30":"transparent"}`, color:active?accentColor:C.muted, fontSize:13, fontWeight:active?600:400, fontFamily:"inherit", transition:"all 0.12s", textAlign:"left", width:"100%", cursor:"pointer" }}>
                   <span style={{ fontSize:11, opacity:active?1:0.5, fontFamily:"monospace", flexShrink:0 }}>{n.icon}</span>
                   <span style={{ flex:1 }}>{n.label}</span>
                   {badge&&badge>0 && (
