@@ -1976,6 +1976,11 @@ export default function App() {
               <input placeholder={mode==="prop"?"Search traders…":"Search clients…"} value={search} onChange={e=>setSearch(e.target.value)}
                 style={{ background:C.card, border:`1px solid ${C.border}`, color:C.text, padding:"8px 14px 8px 32px", borderRadius:C.r, fontSize:13, fontFamily:"inherit", width:200 }}
                 onFocus={e=>e.target.style.borderColor=accentColor} onBlur={e=>e.target.style.borderColor=C.border} />
+            </div>
+            <div style={{ display:"flex", alignItems:"center", gap:7, background:C.card, border:`1px solid ${C.border}`, borderRadius:C.r, padding:"7px 13px" }}>
+              <Pip color={C.green} pulse={true} />
+              <span style={{ fontSize:12, color:C.muted, fontWeight:500 }}>Live</span>
+            </div>
           </div>
         </div>
 
