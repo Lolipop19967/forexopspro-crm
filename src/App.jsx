@@ -1408,8 +1408,140 @@ function BrokerPayments() {
 }
 
 function BrokerExposure() {
+
+  // Points Per Lot demo data — per platform, per period
+  // PPL = broker P&L (spread captured) / total volume in lots
+  // For a b-book broker: expected PPL ≈ symbol spread
+  // e.g. XAUUSD spread 30-40pts → PPL should be 30-40+
+  // If PPL drops below spread baseline → markup misconfigured or market conditions eating into it
+  const PPL_DATA = {
+    daily: [
+      { date:"Today",     ppl:38.2, volume:142.5, pnl:5442, status:"normal" },
+      { date:"Yesterday", ppl:35.8, volume:118.3, pnl:4235, status:"normal" },
+      { date:"Mon",       ppl:21.4, volume:203.1, pnl:4346, status:"low" },
+      { date:"Sun",       ppl:41.1, volume:88.7,  pnl:3646, status:"normal" },
+      { date:"Sat",       ppl:39.6, volume:76.2,  pnl:3018, status:"normal" },
+      { date:"Fri",       ppl:36.9, volume:195.4, pnl:7210, status:"normal" },
+      { date:"Thu",       ppl:18.7, volume:221.8, pnl:4149, status:"low" },
+    ],
+    weekly: [
+      { period:"This Week",  ppl:36.4, volume:1045.5, pnl:38056, status:"normal" },
+      { period:"Last Week",  ppl:33.1, volume:1182.3, pnl:39134, status:"normal" },
+      { period:"2 Wks Ago",  ppl:24.8, volume:1344.1, pnl:33334, status:"low" },
+      { period:"3 Wks Ago",  ppl:38.9, volume:988.7,  pnl:38461, status:"normal" },
+    ],
+    byPlatform: [
+      { platform:"MT5",          ppl:37.8, volume:612.4, pnl:23150, spread:"30-40pts" },
+      { platform:"MT4",          ppl:35.2, volume:288.1, pnl:10141, spread:"30-40pts" },
+      { platform:"cTrader",      ppl:41.3, volume:98.6,  pnl:4072,  spread:"28-35pts" },
+      { platform:"Match-Trader", ppl:22.1, volume:46.4,  pnl:1025,  spread:"30-40pts" },
+    ],
+  };
+
+  const spreadBaseline = 32; // XAUUSD baseline for alert threshold
+
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+
+      {/* PPL SECTION */}
+      <Card s={{ border:`1px solid ${C.blue}22` }}>
+        <CardHead
+          title="Points Per Lot (PPL) — B-Book Revenue Health"
+          sub="PPL = Broker P&L ÷ Total Volume. For b-book: expected PPL ≈ symbol spread. Low PPL signals spread misconfiguration or adverse market conditions."
+          accent={C.blue}
+        />
+        <div style={{ padding:"0 24px 20px" }}>
+
+          {/* Alert if any daily PPL is low */}
+          {PPL_DATA.daily.some(d=>d.status==="low") && (
+            <div style={{ padding:"10px 14px", background:C.amberDim, border:`1px solid ${C.amber}25`, borderRadius:C.r, fontSize:12, color:C.amber, marginBottom:16, display:"flex", alignItems:"center", gap:8 }}>
+              <span>⚠</span>
+              <span>PPL below spread baseline ({spreadBaseline}pts) detected on {PPL_DATA.daily.filter(d=>d.status==="low").length} recent day(s) — check spread configuration or LP pricing.</span>
+            </div>
+          )}
+
+          {/* Period toggle tabs */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:20 }}>
+
+            {/* Daily PPL chart */}
+            <div>
+              <div style={{ fontSize:11, color:C.faint, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:10 }}>Daily PPL — Last 7 Days</div>
+              <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                {PPL_DATA.daily.map((d,i)=>{
+                  const isLow = d.status==="low";
+                  const barPct = Math.min((d.ppl/60)*100, 100);
+                  return (
+                    <div key={i} style={{ display:"flex", alignItems:"center", gap:10 }}>
+                      <div style={{ width:56, fontSize:11, color:C.faint, flexShrink:0 }}>{d.date}</div>
+                      <div style={{ flex:1, height:20, background:C.hover, borderRadius:4, overflow:"hidden", position:"relative" }}>
+                        <div style={{ height:"100%", width:`${barPct}%`, background:isLow?C.amber:C.green, borderRadius:4, transition:"width 0.4s" }} />
+                        {/* Baseline marker */}
+                        <div style={{ position:"absolute", top:0, bottom:0, left:`${(spreadBaseline/60)*100}%`, width:1.5, background:`${C.red}80` }} />
+                      </div>
+                      <div style={{ width:42, fontSize:12, fontFamily:"monospace", fontWeight:700, color:isLow?C.amber:C.green, textAlign:"right", flexShrink:0 }}>{d.ppl.toFixed(1)}</div>
+                      <div style={{ width:48, fontSize:10, color:C.faint, textAlign:"right", flexShrink:0 }}>{d.volume.toFixed(0)}L</div>
+                    </div>
+                  );
+                })}
+                <div style={{ fontSize:10, color:C.faint, marginTop:4 }}>Red line = spread baseline ({spreadBaseline}pts). Values below = investigate.</div>
+              </div>
+            </div>
+
+            {/* Weekly PPL + Platform breakdown */}
+            <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+              <div>
+                <div style={{ fontSize:11, color:C.faint, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:10 }}>Weekly PPL</div>
+                <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                  {PPL_DATA.weekly.map((w,i)=>{
+                    const isLow = w.status==="low";
+                    return (
+                      <div key={i} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"7px 12px", background:C.surface, borderRadius:C.r, border:`1px solid ${isLow?C.amber+"40":C.border}` }}>
+                        <span style={{ fontSize:12, color:C.muted }}>{w.period}</span>
+                        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                          <span style={{ fontSize:11, color:C.faint, fontFamily:"monospace" }}>{w.volume.toFixed(0)}L</span>
+                          <span style={{ fontSize:11, color:C.faint }}>{$k(w.pnl)}</span>
+                          <span style={{ fontSize:13, fontFamily:"monospace", fontWeight:800, color:isLow?C.amber:C.green, minWidth:44, textAlign:"right" }}>{w.ppl.toFixed(1)}</span>
+                          {isLow && <Tag color={C.amber}>Low</Tag>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Per platform */}
+              <div>
+                <div style={{ fontSize:11, color:C.faint, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:10 }}>PPL by Platform</div>
+                <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                  {PPL_DATA.byPlatform.map((p,i)=>{
+                    const isLow = p.ppl < spreadBaseline;
+                    return (
+                      <div key={i} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"7px 12px", background:C.surface, borderRadius:C.r, border:`1px solid ${isLow?C.amber+"40":C.border}` }}>
+                        <div>
+                          <span style={{ fontSize:12, fontWeight:600, color:C.text }}>{p.platform}</span>
+                          <span style={{ fontSize:10, color:C.faint, marginLeft:8 }}>spread {p.spread}</span>
+                        </div>
+                        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                          <span style={{ fontSize:11, color:C.faint, fontFamily:"monospace" }}>{p.volume.toFixed(0)}L</span>
+                          <span style={{ fontSize:13, fontFamily:"monospace", fontWeight:800, color:isLow?C.amber:C.green, minWidth:44, textAlign:"right" }}>{p.ppl.toFixed(1)}</span>
+                          {isLow && <Tag color={C.amber}>↓ Check spread</Tag>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Legend */}
+          <div style={{ display:"flex", gap:20, fontSize:11, color:C.faint, paddingTop:12, borderTop:`1px solid ${C.border}` }}>
+            <span><span style={{ color:C.green }}>●</span> Normal — PPL within spread range</span>
+            <span><span style={{ color:C.amber }}>●</span> Low — PPL below baseline, investigate spread or LP config</span>
+            <span style={{ marginLeft:"auto" }}>PPL unit = points · L = standard lots</span>
+          </div>
+        </div>
+      </Card>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14 }}>
         <Stat label="Total Client Funds" value={"$"+(BROKER_EXPOSURE.totalClientFunds/1000).toFixed(0)+"k"} sub="All accounts" accent={C.green} />
         <Stat label="Open Positions" value={"$"+(BROKER_EXPOSURE.totalOpenPositions/1000).toFixed(0)+"k"} sub="Live exposure" accent={C.blue} />
